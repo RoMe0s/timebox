@@ -153,7 +153,7 @@ let ServicesVue = Vue.component('services-vue', {
     },
 
     getLists() {
-      let path = `${ajax.LOCPATH}/get_category_services`;
+      let path = `/${ajax.pathWho}/services/get_category_services`;
 
       ajax.sendAjax({}, path)
         .done((data) => {
@@ -175,7 +175,7 @@ let ServicesVue = Vue.component('services-vue', {
 
     deleteCategory(category) {
       let data = {id: category.id};
-      let path = `${ajax.LOCPATH}/removecategory`;
+      let path = `/${ajax.pathWho}/services/removecategory`;
 
       ajax.sendAjax(data, path)
         .done((res) => {
@@ -188,7 +188,7 @@ let ServicesVue = Vue.component('services-vue', {
 
     deleteService(service) {
       let data = {id: service.service_id};
-      let path = `${ajax.LOCPATH}/removeservice`;
+      let path = `/${ajax.pathWho}/services/removeservice`;
 
       console.log(data);
      
@@ -256,7 +256,7 @@ let ServicesVue = Vue.component('services-vue', {
       let $form = $(e.target);
 
       if (this.editCategory.id) {
-        let path = `${ajax.LOCPATH}/editcategory`;
+        let path = `/${ajax.pathWho}/services/editcategory`;
         let data = ajax.getFormData($form);
         data.id = this.editCategory.id;
 
@@ -269,7 +269,7 @@ let ServicesVue = Vue.component('services-vue', {
             }
           });
       } else {
-        let path = `${ajax.LOCPATH}/createcategory`;
+        let path = `/${ajax.pathWho}/services/createcategory`;
         let data = ajax.getFormData($form);
 
         ajax.sendAjax(data, path)
@@ -288,7 +288,7 @@ let ServicesVue = Vue.component('services-vue', {
       let $form = $(e.target);
 
       if (this.editService.service_id) {
-        let path = `${ajax.LOCPATH}/editservice`;
+        let path = `/${ajax.pathWho}/services/editservice`;
         let data = ajax.getFormData($form);
         data.id = this.editService.service_id;
         let duration = data.duration;
@@ -310,7 +310,7 @@ let ServicesVue = Vue.component('services-vue', {
             }
           });
       } else {
-        let path = `${ajax.LOCPATH}/createservice`;
+        let path = `/${ajax.pathWho}/services/createservice`;
         let data = ajax.getFormData($form);
         let duration = data.duration;
 

@@ -17,12 +17,12 @@ class RedirectStartAssistant
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next)
-	{
+    {
 		$admin = Admin::where('user_id', Auth::id())->first();
 //		dd($admin->tariffJournal);
-		if (!$admin->assistant_passed) {
+		if (!$admin->assistant_passed && $request->isMethod("GET") && !$request->ajax()) {
 //			dd($_SERVER['REQUEST_URI']);
-			if ($_SERVER['REQUEST_URI'] !== '/office/get_location') {
+			if ($_SERVER['REQUEST_URI'] !== '/office/get_location' && $_SERVER['REQUEST_URI'] !== "/office/tariff") {
 				return redirect('/office/start_assistant');
 			}
 

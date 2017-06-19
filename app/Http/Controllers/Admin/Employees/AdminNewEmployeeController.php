@@ -64,6 +64,19 @@ class AdminNewEmployeeController extends AdminController
 			return redirect('/office/orders_list');
 		}
 
+        if ($this->admin->tariffJournal->type === 'free' && $this->admin->employees()->count() >= 2){
+
+		    if($request->ajax()) {
+
+		        return ['redirect' => '/office/tariff'];
+
+            } else {
+
+                return redirect('/office/tariff');
+
+            }
+        }
+
 		\DB::beginTransaction();
 		try {
 			$request['user_id'] = User::storeAdminEmployee($request->all(), $request->email, $domain, $this->locale);

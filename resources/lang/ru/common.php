@@ -89,4 +89,8 @@ return [
     'friday'    =>  'Пятница',
     'saturday'    =>  'Суббота',
     'sunday'    =>  'Воскресенье',
+
+    'show_in_calendar' => 'Показывать в календаре',
+    'phone' => 'Телефон',
+    'email' => 'Email'
 ];

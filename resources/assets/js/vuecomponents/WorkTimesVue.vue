@@ -71,10 +71,8 @@
 
   filters: filters,
 
-    ready() {
-
-    },
-
+  ready() {
+  },
 
   methods: {
 
@@ -84,7 +82,7 @@
         let data = {
           worktimes: this.worktimes
         };
-        let path = `${ajax.LOCPATH}/edit_worktimes`;
+        let path = `/${ajax.pathWho}/firmdetails/edit_worktimes`;
 
         ajax.sendAjax(data, path)
           .done((res) => {
@@ -111,8 +109,6 @@
     },
 
     timepickerInit() {
-      console.log('asdf');
-
       setTimeout(() => {
         $('.worktime-timepicker').timepicker({
           stepMinute: 15,
@@ -128,7 +124,7 @@
   events: {
     getWorktimes() {
       let data = {};
-      let path = `${ajax.LOCPATH}/get_worktimes`;
+      let path = `/${ajax.pathWho}/firmdetails/get_worktimes`;
 
       if (this.worktimes[0] === 'first') {
         ajax.sendAjax(data, path)

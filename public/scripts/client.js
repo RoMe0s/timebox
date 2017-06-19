@@ -169,6 +169,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -11383,6 +11387,8 @@ var Tabs = _vue2.default.component('tabs', {
                 'service_id': vm.order.serviceId,
                 'date': vm.order.date,
                 'id': vm.order.employeeId
+                // 'start_time': vm.order.timeFrom,
+                // 'duration': vm.order.duration
             };
             $.ajaxSetup({
                 headers: {
@@ -11926,9 +11932,9 @@ if (module.hot) {(function () {  module.hot.accept()
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-73ec01b4", module.exports)
+    hotAPI.createRecord("_v-5ff0b4e0", module.exports)
   } else {
-    hotAPI.update("_v-73ec01b4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-5ff0b4e0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
 },{"vue":3,"vue-hot-reload-api":2,"vueify/lib/insert-css":4}]},{},[5]);

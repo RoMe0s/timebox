@@ -162,13 +162,29 @@ let UserInfoVue = Vue.component('user-info-vue', {
                 }
             });
         },
-
+        previewAvatarr(e) {
+            if (e.target.files !== undefined && e.target.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $(document).find("#assistantAvatarPreview").attr('src', e.target.result);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        },
         sendAvatar(e) {
             let vm = this;
             let $form = $(e.target);
             var typeImg = $form.find('input.logo-block__file').attr('name');
             var $input = $form.find('input[type="file"]');
             var fd = new FormData;
+
+            if (e.target.files !== undefined && e.target.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#assistantAvatarPreview").attr('src', e.target.result);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
 
             fd.append(typeImg, $input.prop('files')[0]);
 

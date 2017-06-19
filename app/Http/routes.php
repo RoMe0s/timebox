@@ -113,6 +113,7 @@ Route::group(['middleware' => 'web'], function () {
 				Route::post('/employee_store', ['uses' => 'DirectorEmployeesController@store']);
 
 
+
 				Route::group(['prefix' => 'employee_info/{directorEmployee}'], function () {
 					Route::get('', ['uses' => 'DirectorEmployeesController@employeeInfo']);
 					Route::post('/get_personal_info', ['uses' => 'DirectorEmployeesController@getEmployeeInfo']);
@@ -165,6 +166,8 @@ Route::group(['middleware' => 'web'], function () {
 						Route::post('/store_logo', ['uses' => 'AdminStartAssistantController@storeLogo']);
 						Route::post('/store_avatar', ['uses' => 'AdminStartAssistantController@storeAvatar']);
 						Route::post('/confirm', ['uses' => 'AdminStartAssistantController@confirm']);
+                        Route::get('/get_employees_list', 'AdminStartAssistantController@get_employees_list');
+                        Route::get('/getServicesCategories', 'AdminStartAssistantController@getServicesCategories');
 					});
 
 					Route::get('/gastebuch', ['uses' => 'AdminController@gastebuch']);
@@ -217,6 +220,8 @@ Route::group(['middleware' => 'web'], function () {
 							Route::post('/store', ['uses' => 'AdminNewEmployeeController@employeeStore']);
 							Route::post('/update_services/{employee}', ['uses' => 'AdminEmployeeController@updateEmployeeService']);
 							Route::get('/delete/{employee}', ['uses' => 'AdminEmployeeController@destroy']);
+                            Route::post('change_status', 'AdminEmployeeController@changeStatus');
+                            Route::post('/update', 'AdminEmployeeController@update');
 
 							Route::group(['prefix' => 'info/{employee}'], function () {
 								Route::get('/', ['uses' => 'AdminEmployeeController@employeeInfo']);

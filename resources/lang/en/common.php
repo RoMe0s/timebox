@@ -89,4 +89,8 @@ return [
     'friday'    =>  'Friday',
     'saturday'    =>  'Saturday',
     'sunday'    =>  'Sunday',
+
+    'show_in_calendar' => 'show in calendar',
+    'phone' => 'Phone',
+    'email' => 'Email'
 ];

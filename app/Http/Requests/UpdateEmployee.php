@@ -23,6 +23,13 @@ class UpdateEmployee extends Request
      */
     public function rules()
     {
+
+        if(!$this->request->has('status')) {
+
+            $this->request->add(['status' => 'not active']);
+
+        }
+
         return [
             'name'      =>  'required|string|max:50',
             'last_name' =>  'required|string|max:50',
@@ -30,7 +37,7 @@ class UpdateEmployee extends Request
             'gender'    =>  'required|in:male,female',
             'birthday'  =>  'date_format:"d/m/Y"',
             'group'     =>  'required|string',
-            'status'    =>  'required|string',
+            'status'    =>  'string',
             'avatar'    =>  'image',
         ];
     }

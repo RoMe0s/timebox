@@ -5,17 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Admin;
 use App\Avatar;
 use App\BankDetails;
+use App\Employee;
+use App\EmployeeService;
 use App\Firm;
 use App\FirmType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Image;
+use App\ServicesCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminStartAssistantController extends Controller
 {
     public $admin_id;
+
+    public $admin;
 
 	/**
 	 * Get admin id for start assistant
@@ -24,7 +29,9 @@ class AdminStartAssistantController extends Controller
 	 */
     public function __construct()
     {
-        $this->admin_id = Admin::where('user_id', Auth::id())->first()->id;
+        $this->admin = Admin::where('user_id', Auth::id())->first();
+
+        $this->admin_id = $this->admin->id;
     }
 
 	/**
@@ -35,7 +42,28 @@ class AdminStartAssistantController extends Controller
     public function startAssistant()
     {
 
-        return view('admin.start_assistant');
+        $employees = $this->admin->employees;
+
+        $this->data['can_add_employee'] = 1;
+        if ($this->admin->tariffJournal->type === 'free' && count($employees) >= 2){
+            $this->data['can_add_employee'] = 0;
+        }
+
+        $this->data['employees'] = $employees;
+
+        $employee = Employee::where('user_id', $this->admin->user_id)->first();
+
+        if($employee) {
+
+            $this->data['is_employee'] = EmployeeService::where('employee_id', $employee->id)->count() ? true : false;
+
+        } else {
+
+            $this->data['is_employee'] = false;
+
+        }
+
+        return view('admin.start_assistant', $this->data);
     }
 
 	/**
@@ -122,4 +150,46 @@ class AdminStartAssistantController extends Controller
             return response()->json(false);
         }
     }
+
+    public function get_employees_list() {
+
+        $employees = $this->admin->employees;
+
+        $employees->filter(function($employee) {
+
+            $employee->avatar = isset($employee->avatarEmployee)
+                ? $employee->avatarEmployee->path
+                : asset('images/default_avatar.png');
+
+            $employee->trans_group = trans('employees.'. $employee->group);
+
+            return $employee;
+
+        });
+
+        $data['data'] = $employees;
+
+        return response()->json($data);
+
+    }
+
+    public function getServicesCategories() {
+
+        $categories = collect();
+
+        foreach(ServicesCategory::where('category_status', 1)->where('admin_id', $this->admin_id)->get() as $category) {
+
+            $categories->push([
+                'id' => $category->id,
+                'name' => $category->category_name,
+                'show' => false,
+                'items' => $this->admin->services()->active()->where('category_id', $category->id)->get()
+            ]);
+
+        }
+
+        return array('data' => $categories);
+
+    }
+
 }
