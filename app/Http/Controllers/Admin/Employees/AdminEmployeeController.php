@@ -51,6 +51,10 @@ class AdminEmployeeController extends AdminController
 
 		$this->data['employees'] = $this->admin->employees()->paginate(15);
 
+		$employee = Employee::where('user_id', $this->admin->user_id)->first();
+
+		$this->data['is_employee'] = EmployeeService::where('employee_id', isset($employee) ? $employee->id : 0)->count() ? true : false;
+
 		return view('admin.employees_list', $this->data);
 	}
 
@@ -61,11 +65,13 @@ class AdminEmployeeController extends AdminController
 	 */
 	public function employeeInfo()
 	{
-		$this->data['employee_services'] = $this->employee->servicesEmployee()->lists('service_id')->toArray();
-		$this->data['employee'] = $this->employee;
-		$this->data['services'] = $this->admin->services()->active()->get();
-
 		if(request()->ajax()) {
+
+            $this->data['employee_services'] = $this->employee->servicesEmployee()->lists('service_id')->toArray();
+            $this->data['employee'] = $this->employee;
+            $this->data['services'] = $this->admin->services()->active()->get();
+
+            $this->data['is_admin_employee'] = $this->employee->user_id === $this->admin->user_id ? true : false;
 
             $categories = collect();
 
@@ -87,6 +93,8 @@ class AdminEmployeeController extends AdminController
 		    return ['data' => $this->data];
 
         }
+
+        $this->data['action'] = \request()->fullUrl() . '/set_personal_info';
 
 		return view('admin.profil_employee', $this->data);
 	}
@@ -164,16 +172,40 @@ class AdminEmployeeController extends AdminController
 		DB::beginTransaction();
 		try {
 
-			ProtocolEmployee::protocolAdminEmployeeChange($this->idAdmin, $this->employee->id, array_keys($request->all()), $request);
-			$this->employee->update($request->all());
+			ProtocolEmployee::protocolAdminEmployeeChange($this->idAdmin, $this->employee->id, array_keys($request->except(['_token', 'services'])), $request);
+			$this->employee->fill($request->all());
+			$this->employee->save();
 
 			($request->group === 'employee')
 				? $this->employee->userEmployee()->update(['status' => 'admin_employee'])
 				: $this->employee->userEmployee()->update(['status' => 'admin']);
 
+            if($this->employee->user_id == $this->admin->user_id) {
+
+                $this->admin->update([
+                    'firstname' => $request->get('name'),
+                    'lastname' => $request->get('last_name'),
+                    'mobile' => $request->get('phone'),
+                    'gender' => $request->get('gender'),
+                    'birthday' => $request->get('birthday'),
+                    'email' => $request->get('email')
+                ]);
+
+                if($request->get('status') != "active") {
+
+                    $this->employee->delete();
+
+                    DB::commit();
+
+                    return ['status' => true, 'redirect' => '/office/employees'];
+
+                }
+
+            }
+
 			DB::commit();
 
-			return response()->json(true);
+			return response()->json(['status' => true, 'redirect' => '/office/employees']);
 		} catch (\Exception $e) {
 			DB::rollBack();
 
@@ -309,7 +341,7 @@ class AdminEmployeeController extends AdminController
 
                     $employee = Employee::create(['user_id' => $info->user_id, 'phone' => $info->mobile, 'email' => $info->email,
                         'gender' => $info->gender, 'birthday' => $info->birthday, 'admin_id' => $this->idAdmin,
-                        'name' => $info->firstname, 'group' => 'admin', 'status' => 'active']);
+                        'name' => $info->firstname, 'group' => 'admin', 'status' => 'active', 'last_name' => $info->lastname]);
 
                 }
 

@@ -92,5 +92,12 @@ return [
 
     'show_in_calendar' => 'Показывать в календаре',
     'phone' => 'Телефон',
-    'email' => 'Email'
+    'email' => 'Email',
+    'cancel' => ' Отмена',
+    'select photo' => 'Выбрать фото',
+    'employee editing' => 'Редактирование сотрудника',
+
+    'admin' => 'Администратор',
+    'employee' => 'Сотрудник',
+    'create employee' => 'Создание сотрудника'
 ];

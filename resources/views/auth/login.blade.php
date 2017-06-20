@@ -16,6 +16,7 @@
         </form>
 
         <form id="forgotPassForm" action="" method="post">
+            {!! csrf_field() !!}
             <span id="close"></span>
             <input type="checkbox" id="forgotpass" class="del" checked="checked"/>
             <label for="raz" class="del">
@@ -131,7 +132,7 @@
                 return false;
             });
         });
-    
+
     </script>
 
 @endsection

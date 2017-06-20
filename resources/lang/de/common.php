@@ -93,5 +93,12 @@ return [
 
     'show_in_calendar' => 'in den kalendar anzeigen',
     'phone' => 'Telefon',
-    'email' => 'Email'
+    'email' => 'Email',
+    'cancel' => 'Abbrechen',
+    'select photo' => 'Fotos auswählen',
+    'employee editing' => 'Bearbeitung Personal',
+
+    'admin' => 'Verwalter',
+    'employee' => 'Mitarbeiter',
+    'create employee' => 'Erstellen mitarbeiter'
 ];

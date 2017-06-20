@@ -133,6 +133,42 @@ let UserInfoVue = Vue.component('user-info-vue', {
             $('#changeAvatar').click();
         },
 
+        changeStatus(event) {
+
+            let $element = $(event.target);
+
+            let status = 'admin';
+
+            if($element.is(":checked")) {
+
+                status = 'employee'
+
+            }
+
+            $.ajax({
+                url: '/office/employees/change_status',
+                type: 'POST',
+                data: {
+                    status: status,
+                    _token: ajax.getToken()
+                }
+            }).done(function(response) {
+
+                if(response.redirect !== undefined &&
+                    response.redirect !== null &&
+                    !response.redirect.length) {
+
+                    window.location.href = response.redirect;
+
+                } else {
+
+                    window.location.reload();
+
+                }
+
+            }.bind(this));
+
+        },
 
         sendLogo(e) {
             let vm = this;

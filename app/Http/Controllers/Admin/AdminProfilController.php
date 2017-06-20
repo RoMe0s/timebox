@@ -7,6 +7,7 @@ use App\Employee;
 use App\EmployeeService;
 use App\ProtocolPersonal;
 use App\Services;
+use App\ServicesCategory;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
@@ -26,17 +27,36 @@ class AdminProfilController extends AdminController
 	 */
 	public function profilEmployee()
 	{
-		$employee = Employee::where('user_id', Auth::id())->first();
-		$this->data['employee_avatar'] = Avatar::where('user_id', Auth::id())->first();
-		$this->data['employee'] = $employee;
-		$this->data['services'] = Services::getServicesList($this->idAdmin);
-		$employee_services = EmployeeService::where('employee_id', $employee->id)->select('service_id')->get();
 
-		$estmp = [];
-		foreach ($employee_services as $es) {
-			$estmp[] = $es->service_id;
-		}
-		$this->data['employee_services'] = $estmp;
+	    if(\request()->ajax()) {
+
+	        $employee = Employee::where('user_id', $this->userId)->first();
+            $this->data['employee_services'] = $employee->servicesEmployee()->lists('service_id')->toArray();
+            $this->data['employee'] = $employee;
+            $this->data['services'] = $this->admin->services()->active()->get();
+
+            $categories = collect();
+
+            foreach(ServicesCategory::where('category_status', 1)->where('admin_id', $this->admin->id)->get() as $category) {
+
+                $categories->push([
+                    'id' => $category->id,
+                    'name' => $category->category_name,
+                    'show' => false,
+                    'items' => $this->admin->services()->active()->where('category_id', $category->id)->get()
+                ]);
+
+            }
+
+            $this->data['categories'] = $categories;
+
+            $this->data['avatar'] = $employee->avatarEmployee;
+
+            return ['data' => $this->data];
+
+        }
+
+        $this->data['action'] = \request()->fullUrl() . '/set_personal_info';
 
 		return view('admin.personal_profil_employee', $this->data);
 	}
@@ -81,9 +101,34 @@ class AdminProfilController extends AdminController
 	 */
 	public function setEmplPersonalInfo(Requests\UpdatePersonalInfo $request)
 	{
-		Employee::find($this->employeeId)->update($request->all());
 
-		return response()->json(true);
+	    DB::beginTransaction();
+
+	    try {
+
+            $employee = Employee::find($this->employeeId);
+
+            $employee->fill($request->all());
+
+            if($request->hasFile('avatar')) {
+
+                Avatar::storeAvatar($employee->user_id, $request);
+
+            }
+
+            $employee->save();
+
+            DB::commit();
+
+            return response()->json(['status' => true, 'redirect' => '/office']);
+
+        } catch (\Exception $e) {
+
+            return response()->json(false);
+
+	        DB::rollback();
+
+        }
 	}
 
 	/**
@@ -146,7 +191,7 @@ class AdminProfilController extends AdminController
 	 */
 	public function profilAdmin(Request $request)
 	{
-		$this->data['admin'] = Employee::where('user_id', $this->userId)->first();
+/*		$this->data['admin'] = Employee::where('user_id', $this->userId)->first();
 		if (!$this->data['admin']) {
 			$this->data['admin'] = Admin::find($this->idAdmin);
 		}
@@ -176,7 +221,53 @@ class AdminProfilController extends AdminController
 
 		if ($request->services_edit) {
 			self::editService($request, $employee->id);
-		}
+		}*/
+
+        if(request()->ajax()) {
+
+            $employee = Employee::where('user_id', $this->userId)->first();
+
+            if(!$employee) {
+
+                $employee = Admin::where('user_id', $this->userId)->first();
+
+            }
+
+            $this->data['employee_services'] = [];
+
+            $avatar = $employee instanceof Employee ? $employee->avatarEmployee : $employee->avatar;
+
+            $this->data['employee_services'] = $employee instanceof Employee ? $employee->servicesEmployee()->lists('service_id')->toArray() : [];
+
+            $this->data['employee'] = $employee;
+
+            $categories = collect();
+
+            $admin = $employee instanceof Employee ? $employee->admin : $employee;
+
+            foreach(ServicesCategory::where('category_status', 1)->where('admin_id', $this->admin->id)->get() as $category) {
+
+                $categories->push([
+                    'id' => $category->id,
+                    'name' => $category->category_name,
+                    'show' => false,
+                    'items' => $admin->services()->active()->where('category_id', $category->id)->get()
+                ]);
+
+            }
+
+            $this->data['categories'] = $categories;
+
+            $this->data['avatar'] = $avatar;
+
+            $this->data['mainAdmin'] = $employee instanceof Admin ? true : false;
+
+            return ['data' => $this->data];
+
+        }
+
+
+        $this->data['action'] = \request()->fullUrl() . '/set_personal_info';
 
 		return view('admin.profil_admin', $this->data);
 	}
@@ -318,21 +409,72 @@ class AdminProfilController extends AdminController
 
 		DB::beginTransaction();
 		try {
+
 			$adminMain = Admin::where('user_id', $this->userId)->first();
+
+            $employee = Employee::where('user_id', $this->userId)->first();
+
 			if ($adminMain) {
+
 				ProtocolPersonal::protocolAdminPersonalChange($this->idAdmin, array('firstname', 'lastname', 'mobile'), $request);
 
-				Admin::find($this->idAdmin)->update($request->all());
-			} else {
-				Employee::where('user_id', $this->userId)->update([
-					'name'   => $request->firstname, 'last_name' => $request->lastname, 'phone' => $request->telnumber,
-					'gender' => $request->gender, 'birthday' => $request->birthday,
-				]);
+                $adminMain->fill($request->all());
+
+                $adminMain->save();
+
+                if($request->has('is_employee') && !$employee) {
+
+                    if ($adminMain->tariffJournal->type === 'free' && $adminMain->employees()->count() >= 2) {
+
+                        if ($request->ajax()) {
+
+                            return ['redirect' => '/office/tariff'];
+
+                        } else {
+
+                            return redirect('/office/tariff');
+
+                        }
+
+                    }
+
+                    if (!$employee) {
+
+                        $employee = Employee::create(['user_id' => $adminMain->user_id, 'phone' => $adminMain->mobile, 'email' => $adminMain->email,
+                            'gender' => $adminMain->gender, 'birthday' => $adminMain->birthday, 'admin_id' => $adminMain->id,
+                            'name' => $adminMain->firstname, 'group' => 'admin', 'status' => 'active', 'last_name' => $adminMain->lastname]);
+
+                    }
+
+                } elseif(!$request->has('is_employee')) {
+
+                    $this->toAdmin();
+
+                    $employee = null;
+
+                }
+
 			}
 
-			DB::commit();
+            if($employee) {
 
-			return response()->json(true);
+                $employee->update([
+                    'name' => $request->firstname, 'last_name' => $request->lastname, 'phone' => $request->mobile,
+                    'gender' => $request->gender, 'birthday' => $request->birthday,
+                ]);
+
+                $services = $request->input('services') ?: [];
+
+                $employee->servicesEmployee()->sync($services);
+
+            }
+
+            Avatar::storeAvatar(Auth::user()->id, $request);
+
+            DB::commit();
+
+            return response()->json(array('status' => true, 'redirect' => '/office/employees'));
+
 		} catch (\Exception $e) {
 			DB::rollBack();
 

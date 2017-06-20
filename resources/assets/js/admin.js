@@ -24,7 +24,10 @@ import DirectorstatsVue from './vuecomponents/DirectorstatsVue.js'
 import HeaderTimeVue from './vuecomponents/HeaderTimeVue.vue'
 import SettingsKalendarVue from './vuecomponents/SettingsKalendarVue.js'
 import Alert from './vuecomponents/vue-strap/src/Alert.vue'
-import AssistantCreateEmployee from './vuecomponents/AssistantCreateNewEmployee.js'
+
+import EmployeeIndex from './components/employees/index.js'
+import EmployeeCreateNewVue from './components/employees/create.js'
+
 import VueI18n  from 'vue-i18n'
 import VueResource from 'vue-resource'
 import * as ajax from './ajax.js'
@@ -93,7 +96,8 @@ $(document).ready(function() {
       DirectorstatsVue,
       EmployeesListVue,
       CreateEmployeeVue,
-      AssistantCreateEmployee
+      EmployeeIndex,
+      EmployeeCreateNewVue
     },
 
     ready() {

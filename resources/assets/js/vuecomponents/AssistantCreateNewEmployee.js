@@ -2,11 +2,12 @@ import Vue from 'vue'
 import * as ajax from '../ajax.js'
 import ConfirmVue from './ConfirmVue.vue'
 import Alert from './vue-strap/src/Alert.vue'
+import EmployeesListVue from './EmployeesListVue.js'
 
 let AssistantCreateEmployee = Vue.component('assistant-create-employee', {
     template: '#create-employee-template',
 
-    components: {ConfirmVue, Alert},
+    components: {ConfirmVue, Alert, EmployeesListVue},
 
     data() {
         return {
@@ -55,7 +56,7 @@ let AssistantCreateEmployee = Vue.component('assistant-create-employee', {
                         this.showCreateEmplAlert = true;
                     }
 
-                    $("#assistantAvatarPreview").attr("src", "");
+                    $("#assistantAvatarCreatePreview").attr("src", "");
 
                     $("#userInfoForm").find("[name]").each(function() {
 
@@ -67,6 +68,9 @@ let AssistantCreateEmployee = Vue.component('assistant-create-employee', {
 
                     });
 
+                    this.$broadcast('userChanged');
+
+
                 } else {
 
                     window.open(res.redirect, '_blank');
@@ -75,9 +79,8 @@ let AssistantCreateEmployee = Vue.component('assistant-create-employee', {
 
                 }
             })
-            .fail((err)=> {
+            .fail(()=> {
                 this.isConfirm = false;
-                throw new Error(err);
             });
         },
         changeState() {
@@ -97,6 +100,8 @@ let AssistantCreateEmployee = Vue.component('assistant-create-employee', {
                 this.state = false;
 
             }
+
+
 
         },
         showCategory(id) {
@@ -153,7 +158,9 @@ let AssistantCreateEmployee = Vue.component('assistant-create-employee', {
 
                 }
 
-            });
+                this.$broadcast('userChanged');
+
+            }.bind(this));
 
         }
     },

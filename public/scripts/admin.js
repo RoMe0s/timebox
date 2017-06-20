@@ -20604,9 +20604,13 @@ var _Alert = require('./vuecomponents/vue-strap/src/Alert.vue');
 
 var _Alert2 = _interopRequireDefault(_Alert);
 
-var _AssistantCreateNewEmployee = require('./vuecomponents/AssistantCreateNewEmployee.js');
+var _index = require('./components/employees/index.js');
 
-var _AssistantCreateNewEmployee2 = _interopRequireDefault(_AssistantCreateNewEmployee);
+var _index2 = _interopRequireDefault(_index);
+
+var _create = require('./components/employees/create.js');
+
+var _create2 = _interopRequireDefault(_create);
 
 var _vueI18n = require('vue-i18n');
 
@@ -20694,7 +20698,8 @@ $(document).ready(function () {
       DirectorstatsVue: _DirectorstatsVue2.default,
       EmployeesListVue: _EmployeesListVue2.default,
       CreateEmployeeVue: _CreateEmployeeVue2.default,
-      AssistantCreateEmployee: _AssistantCreateNewEmployee2.default
+      EmployeeIndex: _index2.default,
+      EmployeeCreateNewVue: _create2.default
     },
 
     ready: function ready() {
@@ -21011,7 +21016,7 @@ $(document).ready(function () {
   // });
 });
 
-},{"./ajax.js":92,"./i18n/datepicker-de":94,"./i18n/datepicker-en-AU":95,"./i18n/datepicker-ru":96,"./lang.js":97,"./modules/App.js":100,"./vuecomponents/AssistantCreateNewEmployee.js":107,"./vuecomponents/AssistantVue.vue":108,"./vuecomponents/BillingVue.js":109,"./vuecomponents/ChatVue.js":110,"./vuecomponents/CreateEmployeeVue.js":112,"./vuecomponents/DashboardVue.js":113,"./vuecomponents/DirectorstatsVue.js":114,"./vuecomponents/EditingModalVue.js":115,"./vuecomponents/EmployeesListVue.js":116,"./vuecomponents/FirmDetailsVue.js":117,"./vuecomponents/HeaderTimeVue.vue":118,"./vuecomponents/HeaderVue.js":119,"./vuecomponents/LogoVue.js":120,"./vuecomponents/NewsletterVue.js":121,"./vuecomponents/OrdersVue.js":122,"./vuecomponents/ServicesVue.js":124,"./vuecomponents/SettingsKalendarVue.js":125,"./vuecomponents/SidebarVue.js":126,"./vuecomponents/SmsinfoVue.js":127,"./vuecomponents/TariffVue.js":128,"./vuecomponents/TariffsVue.js":129,"./vuecomponents/UserInfoVue.js":130,"./vuecomponents/calendar-block.vue":132,"./vuecomponents/vue-strap/src/Alert.vue":134,"moment":84,"moment/locale/de":81,"moment/locale/en-au":82,"moment/locale/ru":83,"vue":89,"vue-i18n":87,"vue-resource":88}],92:[function(require,module,exports){
+},{"./ajax.js":92,"./components/employees/create.js":93,"./components/employees/index.js":94,"./i18n/datepicker-de":97,"./i18n/datepicker-en-AU":98,"./i18n/datepicker-ru":99,"./lang.js":100,"./modules/App.js":103,"./vuecomponents/AssistantVue.vue":111,"./vuecomponents/BillingVue.js":112,"./vuecomponents/ChatVue.js":113,"./vuecomponents/CreateEmployeeVue.js":115,"./vuecomponents/DashboardVue.js":116,"./vuecomponents/DirectorstatsVue.js":117,"./vuecomponents/EditingModalVue.js":118,"./vuecomponents/EmployeesListVue.js":119,"./vuecomponents/FirmDetailsVue.js":120,"./vuecomponents/HeaderTimeVue.vue":121,"./vuecomponents/HeaderVue.js":122,"./vuecomponents/LogoVue.js":123,"./vuecomponents/NewsletterVue.js":124,"./vuecomponents/OrdersVue.js":125,"./vuecomponents/ServicesVue.js":127,"./vuecomponents/SettingsKalendarVue.js":128,"./vuecomponents/SidebarVue.js":129,"./vuecomponents/SmsinfoVue.js":130,"./vuecomponents/TariffVue.js":131,"./vuecomponents/TariffsVue.js":132,"./vuecomponents/UserInfoVue.js":133,"./vuecomponents/calendar-block.vue":135,"./vuecomponents/vue-strap/src/Alert.vue":137,"moment":84,"moment/locale/de":81,"moment/locale/en-au":82,"moment/locale/ru":83,"vue":89,"vue-i18n":87,"vue-resource":88}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21136,6 +21141,412 @@ function getToken() {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _vue = require('vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _info = require('./info.js');
+
+var _info2 = _interopRequireDefault(_info);
+
+var _ConfirmVue = require('./../../vuecomponents/ConfirmVue.vue');
+
+var _ConfirmVue2 = _interopRequireDefault(_ConfirmVue);
+
+var _Alert = require('./../../vuecomponents/vue-strap/src/Alert.vue');
+
+var _Alert2 = _interopRequireDefault(_Alert);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Created by rome0s on 6/19/17.
+ */
+var EmployeeCreateNewVue = _vue2.default.component('employee-create-new-vue', {
+
+    template: "#employee-create-new-template",
+
+    components: {
+        EmployeeInfoNewVue: _info2.default,
+        ConfirmVue: _ConfirmVue2.default,
+        Alert: _Alert2.default
+    },
+
+    props: ['edit'],
+
+    data: function data() {
+        return {
+            showConfirm: false,
+            isConfirm: false,
+            showCreateEmplAlert: false,
+            form: null
+        };
+    },
+    ready: function ready() {
+
+        if (this.edit !== undefined) {
+
+            this.$broadcast('getUserinfo');
+        }
+    },
+
+
+    methods: {
+        trySendForm: function trySendForm(e) {
+            var isButton = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+
+            var form = !isButton ? $(e.target) : $(e.target).closest('form');
+            form.validate({
+                rules: {
+                    name: {
+                        required: true
+                    },
+                    firstname: {
+                        required: true
+                    },
+                    last_name: {
+                        required: true
+                    },
+                    lastname: {
+                        required: true
+                    },
+                    telnumber: {
+                        required: true,
+                        maxlength: 15,
+                        minlength: 5,
+                        number: true
+                    },
+                    phone: {
+                        required: true,
+                        maxlength: 15,
+                        minlength: 5,
+                        number: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    gender: {
+                        required: true
+                    },
+                    birthday: {
+                        required: true
+                    },
+                    group: {
+                        required: true
+                    }
+                }
+            });
+            var isValid = form.valid();
+            if (isValid) {
+
+                this.form = form;
+
+                if (!this.edit) {
+
+                    this.showConfirm = true;
+                } else {
+
+                    this.isConfirm = true;
+                }
+            } else {
+
+                this.showConfirm = false;
+            }
+        },
+        sendForm: function sendForm() {
+            var _this = this;
+
+            var $form = this.form,
+                formData = new FormData($form[0]);
+
+            $.ajax({
+                url: $form.attr("action"),
+                type: $form.attr("method"),
+                data: formData,
+                contentType: false,
+                processData: false
+            }).done(function (res) {
+
+                if (res.status) {
+
+                    _this.isConfirm = false;
+                    _this.state = false;
+
+                    if (res.redirect !== undefined && res.redirect !== null && res.redirect.length) {
+
+                        window.location.href = res.redirect;
+                    }
+                } else {
+
+                    _this.isConfirm = false;
+                    _this.showCreateEmplAlert = true;
+                }
+            }).fail(function (err) {
+                _this.isConfirm = false;
+                throw new Error(err);
+            });
+        }
+    },
+
+    events: {},
+
+    watch: {
+        'isConfirm': function isConfirm() {
+            console.log(this.form);
+            if (this.isConfirm == true && this.form != null) {
+                this.sendForm();
+            }
+        }
+    }
+
+});
+
+exports.default = EmployeeCreateNewVue;
+
+},{"./../../vuecomponents/ConfirmVue.vue":114,"./../../vuecomponents/vue-strap/src/Alert.vue":137,"./info.js":95,"vue":89}],94:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _vue = require('vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _ajax = require('./../../ajax.js');
+
+var ajax = _interopRequireWildcard(_ajax);
+
+var _ConfirmVue = require('./../../vuecomponents/ConfirmVue.vue');
+
+var _ConfirmVue2 = _interopRequireDefault(_ConfirmVue);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var EmployeeIndex = _vue2.default.component('employees-index', {
+
+    template: '#employees-index',
+
+    components: {
+        ConfirmVue: _ConfirmVue2.default
+    },
+
+    data: function data() {
+        return {
+            list: []
+        };
+    },
+
+    created: function created() {
+        // this.refreshTable();
+    },
+
+    methods: {
+        refreshTable: function refreshTable() {
+            $.get('/office/start_assistant/get_employees_list').done(function (response) {
+
+                this.list = response.data;
+            }.bind(this));
+        },
+        deleteEmployee: function deleteEmployee(link) {
+            var text = '';
+            var isConfirm = void 0;
+            var locale = this.$root.locale;
+
+            switch (locale) {
+                case 'ru':
+                    text = 'Вы действительно желаете удалить сотрудника? В связи с этим будут удалены все заказы. вы согласны с этим?';
+                    break;
+                case 'de':
+                    text = 'Sind Sie sicher, dass Sie einen Mitarbeiter zu löschen? In diesem Zusammenhang werden alle Aufträge gelöscht. gehen Sie mit dem zustimmen?';
+                    break;
+                case 'en':
+                    text = 'Are you sure you want to delete an employee? In this regard, all orders will be deleted. do you agree with that?';
+                    break;
+            }
+
+            isConfirm = confirm(text);
+
+            if (isConfirm) {
+
+                $.get(link).done(function () {
+
+                    window.location.reload();
+
+                    // this.refreshTable();
+                });
+            }
+        },
+        addEmployee: function addEmployee(event) {
+            var can_add = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+
+            if (can_add === 1) {
+
+                window.location.href = $(event.target).attr("href");
+            } else {
+
+                window.location.href = '/office/tariff';
+            }
+        },
+        changeStatus: function changeStatus(event) {
+
+            var $element = $(event.target);
+
+            var status = 'admin';
+
+            if ($element.is(":checked")) {
+
+                status = 'employee';
+            }
+
+            $.ajax({
+                url: '/office/employees/change_status',
+                type: 'POST',
+                data: {
+                    status: status,
+                    _token: ajax.getToken()
+                }
+            }).done(function (response) {
+
+                if (response.redirect !== undefined && response.redirect !== null && !response.redirect.length) {
+
+                    window.location.href = response.redirect;
+                } else {
+
+                    window.location.reload();
+                }
+            }.bind(this));
+        }
+    },
+
+    events: {},
+
+    watch: {}
+
+});
+
+exports.default = EmployeeIndex;
+
+},{"./../../ajax.js":92,"./../../vuecomponents/ConfirmVue.vue":114,"vue":89}],95:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _vue = require('vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var EmployeeInfoNewVue = _vue2.default.component('employee-info-new-vue', {
+
+    template: "#employee-info-new-template",
+
+    data: function data() {
+        return {
+
+            categories: [],
+            userInfo: {
+                avatar: {},
+                employee: {}
+
+            },
+            edit: false
+
+        };
+    },
+    ready: function ready() {
+
+        this.getServicesCategories();
+    },
+
+
+    props: ["edit"],
+
+    methods: {
+        previewAvatar: function previewAvatar(e) {
+
+            var $this = e.target;
+
+            if (e.target.files !== undefined && e.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $($this).closest(".avatar_zone").find("img").attr('src', e.target.result);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        },
+        clickAvatar: function clickAvatar(e) {
+
+            $(e.target).closest('div').find('[type="file"]').first().click();
+        },
+        showCategory: function showCategory(id) {
+
+            for (var iterator in this.categories) {
+
+                if (this.categories[iterator].id !== id) {
+
+                    this.categories[iterator].show = false;
+                } else {
+
+                    if (this.categories[iterator].show === false) {
+
+                        this.categories[iterator].show = true;
+                    } else {
+
+                        this.categories[iterator].show = false;
+                    }
+                }
+            }
+        },
+        loadUserData: function loadUserData() {
+
+            $.get(window.location.href).done(function (response) {
+                this.userInfo = response.data;
+                this.categories = response.data.categories;
+                this.edit = true;
+            }.bind(this));
+        },
+        openUserInfoModal: function openUserInfoModal() {
+            this.$broadcast('openUserInfoModal');
+        },
+        getServicesCategories: function getServicesCategories() {
+
+            $.get('/office/start_assistant/getServicesCategories').done(function (response) {
+
+                this.categories = response.data;
+            }.bind(this));
+        }
+    },
+    events: {
+
+        'getUserinfo': function getUserinfo() {
+
+            this.loadUserData();
+        }
+
+    }
+
+}); /**
+     * Created by rome0s on 6/19/17.
+     */
+exports.default = EmployeeInfoNewVue;
+
+},{"vue":89}],96:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
@@ -21213,7 +21624,7 @@ exports.default = {
 	}
 };
 
-},{"moment":84}],94:[function(require,module,exports){
+},{"moment":84}],97:[function(require,module,exports){
 "use strict";
 
 /* German initialisation for the jQuery UI date picker plugin. */
@@ -21251,7 +21662,7 @@ exports.default = {
 	return datepicker.regional.de;
 });
 
-},{}],95:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 "use strict";
 
 /* English/Australia initialisation for the jQuery UI date picker plugin. */
@@ -21289,7 +21700,7 @@ exports.default = {
 	return datepicker.regional["en-AU"];
 });
 
-},{}],96:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 "use strict";
 
 /* Russian (UTF-8) initialisation for the jQuery UI date picker plugin. */
@@ -21327,7 +21738,7 @@ exports.default = {
 	return datepicker.regional.ru;
 });
 
-},{}],97:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21657,7 +22068,7 @@ var LOCALES = exports.LOCALES = {
     }
 };
 
-},{}],98:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21702,7 +22113,7 @@ function getMonthDateRange(year, month) {
     return { start: startDate, end: endDate };
 }
 
-},{"moment":84}],99:[function(require,module,exports){
+},{"moment":84}],102:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21824,7 +22235,7 @@ var GET_CITIES = exports.GET_CITIES = {
   }
 };
 
-},{"./ajax.js":92}],100:[function(require,module,exports){
+},{"./ajax.js":92}],103:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21897,7 +22308,7 @@ var App = function () {
 
 exports.default = App;
 
-},{"./Ckeditor.js":101,"./Newsletter.js":102,"./Services.js":103,"./Sidebar.js":104,"./Tabs.js":105,"./Validate.js":106}],101:[function(require,module,exports){
+},{"./Ckeditor.js":104,"./Newsletter.js":105,"./Services.js":106,"./Sidebar.js":107,"./Tabs.js":108,"./Validate.js":109}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21953,7 +22364,7 @@ var Ckeditor = function () {
 
 exports.default = Ckeditor;
 
-},{"../ajax.js":92}],102:[function(require,module,exports){
+},{"../ajax.js":92}],105:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21972,7 +22383,7 @@ var Newsletter = function () {
 
 exports.default = Newsletter;
 
-},{}],103:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22009,7 +22420,7 @@ var Services = function () {
 
 exports.default = Services;
 
-},{}],104:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22047,7 +22458,7 @@ var Sidebar = function () {
 
 exports.default = Sidebar;
 
-},{}],105:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22079,7 +22490,7 @@ var Tabs = function () {
 
 exports.default = Tabs;
 
-},{}],106:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22832,7 +23243,7 @@ var Validate = function () {
 
 exports.default = Validate;
 
-},{"../ajax.js":92}],107:[function(require,module,exports){
+},{"../ajax.js":92}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22855,6 +23266,10 @@ var _Alert = require('./vue-strap/src/Alert.vue');
 
 var _Alert2 = _interopRequireDefault(_Alert);
 
+var _EmployeesListVue = require('./EmployeesListVue.js');
+
+var _EmployeesListVue2 = _interopRequireDefault(_EmployeesListVue);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -22862,7 +23277,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var AssistantCreateEmployee = _vue2.default.component('assistant-create-employee', {
     template: '#create-employee-template',
 
-    components: { ConfirmVue: _ConfirmVue2.default, Alert: _Alert2.default },
+    components: { ConfirmVue: _ConfirmVue2.default, Alert: _Alert2.default, EmployeesListVue: _EmployeesListVue2.default },
 
     data: function data() {
         return {
@@ -22910,7 +23325,7 @@ var AssistantCreateEmployee = _vue2.default.component('assistant-create-employee
                         _this.showCreateEmplAlert = true;
                     }
 
-                    $("#assistantAvatarPreview").attr("src", "");
+                    $("#assistantAvatarCreatePreview").attr("src", "");
 
                     $("#userInfoForm").find("[name]").each(function () {
 
@@ -22919,15 +23334,16 @@ var AssistantCreateEmployee = _vue2.default.component('assistant-create-employee
                             $(this).val('');
                         }
                     });
+
+                    _this.$broadcast('userChanged');
                 } else {
 
                     window.open(res.redirect, '_blank');
 
                     _this.state = false;
                 }
-            }).fail(function (err) {
+            }).fail(function () {
                 _this.isConfirm = false;
-                throw new Error(err);
             });
         },
         changeState: function changeState() {
@@ -22989,7 +23405,9 @@ var AssistantCreateEmployee = _vue2.default.component('assistant-create-employee
 
                     window.open(response.redirect, '_blank');
                 }
-            });
+
+                this.$broadcast('userChanged');
+            }.bind(this));
         }
     },
 
@@ -23014,7 +23432,7 @@ var AssistantCreateEmployee = _vue2.default.component('assistant-create-employee
 
 exports.default = AssistantCreateEmployee;
 
-},{"../ajax.js":92,"./ConfirmVue.vue":111,"./vue-strap/src/Alert.vue":134,"vue":89}],108:[function(require,module,exports){
+},{"../ajax.js":92,"./ConfirmVue.vue":114,"./EmployeesListVue.js":119,"./vue-strap/src/Alert.vue":137,"vue":89}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -23035,13 +23453,17 @@ var _WorkTimesVue = require('./WorkTimesVue.vue');
 
 var _WorkTimesVue2 = _interopRequireDefault(_WorkTimesVue);
 
+var _AssistantCreateNewEmployee = require('./AssistantCreateNewEmployee.js');
+
+var _AssistantCreateNewEmployee2 = _interopRequireDefault(_AssistantCreateNewEmployee);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
 
-    components: { WorkTimesVue: _WorkTimesVue2.default },
+    components: { WorkTimesVue: _WorkTimesVue2.default, AssistantCreateNewEmployee: _AssistantCreateNewEmployee2.default },
 
     data: function data() {
         return {
@@ -23264,6 +23686,7 @@ exports.default = {
                 //            break;
                 case 3:
                     this.$broadcast('getServicesCategories');
+                    this.$broadcast('userChanged');
                     return true;
                     break;
                 case 4:
@@ -23281,7 +23704,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"assistant\">\n\n        <section v-show=\"step === 0\" class=\"assistant-hero\" style=\"margin-top: calc(25% - 140px)\">\n            <div class=\"assistant-hero_2_in\" style=\"width: 100%\">\n                <h1 class=\"assistant-hero__heading\" style=\"width: 100%; text-align: center; display: table;\">{{ $t(\"step0.heading\") }}, {{ startData.admin_data.firstname }}!</h1>\n                <div class=\"assistant-hero__desc\" style=\"width: 100%; text-align: center; display: table;\">{{ $t(\"step0.desc\") }}</div>\n                <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"step0.btn\") }}\n                </button>\n            </div>\n        </section>\n\n        <section v-show=\"step === 1\" class=\"assistant-step\">\n            <h2 class=\"assistant-heading--h2\">\n                {{ $t(\"all.heading\") }}<br>\n                {{ $t(\"all.step\") }} {{ step }} / 5\n            </h2>\n\n            <div class=\"assistant-step__in\">\n                <div class=\"assistant-step__left\">\n\n                    <div class=\"assistant-block\">\n                        <div class=\"assistant-block__label\">{{ $t(\"step1.label1\") }}</div>\n                        <form id=\"assistantForm1\" class=\"assistant-form\">\n\n                            <div class=\"assistant-form__row\">\n                                <div class=\"assistant-form__col assistant-form__col--3\">\n                                    <label for=\"greeting\" class=\"assistant-form__label\">{{ $t(\"step1.greeting\")\n                                        }}</label>\n                                    <select v-model=\"assistantData.greeting\" @change=\"assistantData.gender = assistantData.greeting\" :value=\"startData.admin_data.gender\" name=\"greeting\" id=\"greeting\" class=\"assistant-input assistant-input--select\">\n                                        <option value=\"male\">{{ $t(\"step1.herr\") }}</option>\n                                        <option value=\"female\">{{ $t(\"step1.frau\") }}</option>\n                                    </select>\n                                </div>\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"first-name\" class=\"assistant-form__label\">{{ $t(\"step1.name\") }}</label>\n                                    <input v-model=\"assistantData.firstname\" :value=\"startData.admin_data.firstname\" type=\"text\" name=\"firstname\" class=\"assistant-input\" id=\"first-name\" required=\"\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"last-name\" class=\"assistant-form__label\">{{ $t(\"step1.lastName\")\n                                        }}</label>\n                                    <input v-model=\"assistantData.lastname\" :value=\"startData.admin_data.lastname\" type=\"text\" name=\"lastname\" class=\"assistant-input\" id=\"last-name\" required=\"\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"email\" class=\"assistant-form__label\">E-Mail</label>\n                                    <input v-model=\"assistantData.email\" :value=\"startData.admin_data.email\" type=\"email\" class=\"assistant-input\" id=\"email\" required=\"\" name=\"email\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"website\" class=\"assistant-form__label\">Website</label>\n                                    <input v-model=\"assistantData.firmname\" type=\"text\" class=\"assistant-input\" id=\"website\" required=\"\" name=\"firmname\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"phone\" class=\"assistant-form__label\">{{ $t(\"step1.tel\") }}</label>\n                                    <input v-model=\"assistantData.telnumber\" :value=\"startData.admin_data.telnumber\" type=\"tel\" class=\"assistant-input\" id=\"phone\" required=\"\" name=\"telnumber\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"mobile\" class=\"assistant-form__label\">{{ $t(\"step1.mobile\") }}</label>\n                                    <input v-model=\"assistantData.mobile\" :value=\"startData.admin_data.mobile\" type=\"tel\" class=\"assistant-input\" id=\"mobile\" name=\"mobile\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"gender\" class=\"assistant-form__label\">{{ $t(\"step1.gender\") }}</label>\n                                    <select v-model=\"assistantData.gender\" @change=\"assistantData.greeting = assistantData.gender\" :value=\"startData.admin_data.gender\" name=\"gender\" id=\"gender\" class=\"assistant-input assistant-input--select\">\n                                        <option value=\"male\">{{ $t(\"step1.male\") }}</option>\n                                        <option value=\"female\">{{ $t(\"step1.female\") }}</option>\n                                    </select>\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"birthday\" class=\"assistant-form__label\">{{ $t(\"step1.birthday\")\n                                        }}</label>\n                                    <input v-model=\"assistantData.birthday\" name=\"birthday\" id=\"birthday\" class=\"assistant-input input-date\" type=\"text\">\n                                </div>\n\n                            </div>\n\n                        </form>\n                    </div>\n\n                    <div class=\"assistant-step__btns\">\n                        <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                        </button>\n                        <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                        </button>\n                    </div>\n                </div>\n\n                <form class=\"assistant-block assistant-upload\" id=\"assistantUploadAvatar\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step1.label2\") }}</div>\n                    <div @dragover.prevent=\"\" @drop=\"onFileChange($event, 'avatar')\" class=\"assistant-upload__drop\">\n                        <input class=\"assistant-block__file\" id=\"assistantAvatar\" type=\"file\" @change=\"onFileChange($event, 'avatar')\">\n                        <img class=\"assistant-upload__image\" :src=\"imgs.avatar\">\n                    </div>\n\n                    <button @click.stop.prevent=\"changeAvatar\" class=\"assistant-upload__btn assistant-btn assistant-btn--red\">{{ $t(\"step1.uploadAvatar\")\n                        }}\n                    </button>\n                </form>\n\n            </div>\n        </section>\n\n        <section v-show=\"step === 2\" class=\"assistant-step\">\n            <h2 class=\"assistant-heading--h2\">\n                {{ $t(\"step2.heading\") }}<br>\n                {{ $t(\"all.step\") }} {{ step }} / 5\n            </h2>\n\n            <div class=\"assistant-step__in\">\n                <div class=\"assistant-step__left\">\n\n                    <div class=\"assistant-block\">\n                        <div class=\"assistant-block__label\">{{ $t(\"step2.label1\") }}</div>\n                        <form id=\"assistantForm2\" class=\"assistant-form\">\n\n                            <div class=\"assistant-form__row\">\n                                <div class=\"assistant-form__col assistant-form__col--12\">\n                                    <label for=\"name-company\" class=\"assistant-form__label\">{{ $t(\"step2.companyName\")\n                                        }}</label>\n                                    <input v-model=\"assistantData.firm_name\" type=\"text\" name=\"firm_name\" class=\"assistant-input\" id=\"name-company\">\n                                </div>\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--4\">\n                                    <label for=\"country\" class=\"assistant-form__label\">{{ $t(\"all.country\") }}</label>\n                                    <select v-model=\"assistantData.country\" @change.stop=\"getStates(assistantData.country)\" name=\"country\" id=\"country\" class=\"assistant-input assistant-input--select\" placeholder=\"Select country...\">\n                                        <option v-for=\"country in countries\" :value=\"country.country_id\">{{ country.name\n                                            }}\n                                        </option>\n                                    </select>\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--4\">\n                                    <label for=\"state\" class=\"assistant-form__label\">{{ $t(\"all.region\") }}</label>\n                                    <select @change.stop=\"getCities(assistantData.state)\" v-model=\"assistantData.state\" name=\"state\" id=\"state\" class=\"assistant-input assistant-input--select\" placeholder=\"Select state...\">\n                                        <option v-for=\"state in states\" :value=\"state.state_id\">{{ state.name }}\n                                        </option>\n                                    </select>\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--4\">\n                                    <label for=\"city\" class=\"assistant-form__label\">Stadt</label>\n                                    <select v-model=\"assistantData.city\" class=\"assistant-input assistant-input--select\" name=\"city\" id=\"city\" placeholder=\"Select city...\">\n                                        <option v-for=\"city in cities\" :value=\"city.city_id\">{{ city.name }}</option>\n                                    </select>\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"index\" class=\"assistant-form__label\">{{ $t(\"all.postIndex\") }}</label>\n                                    <input v-model=\"assistantData.post_index\" type=\"text\" class=\"assistant-input\" id=\"index\" name=\"post_index\" required=\"\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"street\" class=\"assistant-form__label\">{{ $t(\"all.address\") }}</label>\n                                    <input v-model=\"assistantData.street\" type=\"text\" class=\"assistant-input\" id=\"street\" name=\"street\" required=\"\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"business\" class=\"assistant-form__label\">{{ $t(\"all.business\") }}</label>\n                                    <select v-model=\"assistantData.firmtype\" name=\"firmtype\" id=\"business\" class=\"assistant-input assistant-input--select\" placeholder=\"Wähle Deine Branche aus…\">\n                                        <option value=\"\">{{ $t(\"step2.business\") }}</option>\n                                        <option v-for=\"firmtype in startData.firmtype\" :selected=\"firmtype.id === startData.admin_data.firmtype\" :value=\"firmtype.id\">{{ firmtype.firmtype }}\n                                        </option>\n                                    </select>\n                                </div>\n\n                            </div>\n\n                        </form>\n                    </div>\n\n                    <div class=\"assistant-step__btns\">\n                        <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                        </button>\n                        <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                        </button>\n                    </div>\n                </div>\n\n                <div class=\"assistant-block assistant-upload\" id=\"assistantUploadLogo\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step2.label2\") }}</div>\n                    <div @dragover.prevent=\"\" @drop=\"onFileChange($event, 'logo')\" class=\"assistant-upload__drop\">\n                        <input class=\"assistant-block__file\" id=\"assistantLogo\" type=\"file\" @change=\"onFileChange($event, 'logo')\">\n                        <img class=\"assistant-upload__image\" :src=\"imgs.logo\">\n                    </div>\n\n                    <button @click.stop.prevent=\"changeLogo\" class=\"assistant-upload__btn assistant-btn assistant-btn--red\">{{ $t(\"step2.uploadLogo\") }}\n                    </button>\n                </div>\n\n            </div>\n        </section>\n\n        <!--<section v-show=\"step === 3\" class=\"assistant-step\">-->\n            <!--<h2 class=\"assistant-heading&#45;&#45;h2\">-->\n                <!--{{ $t(\"all.heading\") }}<br />-->\n                <!--{{ $t(\"all.step\") }} {{ step }} / 6-->\n            <!--</h2>-->\n\n            <!--<div class=\"assistant-step__in\">-->\n                <!--<div class=\"assistant-step__left\">-->\n\n                    <!--<div class=\"assistant-block\">-->\n                        <!--<div class=\"assistant-block__label\">{{ $t(\"all.billingAddress\") }}</div>-->\n                        <!--<form id=\"assistantForm4\" class=\"assistant-form\">-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;12\">-->\n                                    <!--<label for=\"companyName2\" class=\"assistant-form__label\">{{ $t(\"step4.companyName\")-->\n                                        <!--}}</label>-->\n                                    <!--<input v-model=\"assistantData.legal_firm_name\" type=\"text\" class=\"assistant-input\"-->\n                                           <!--id=\"companyName2\" name=\"legal_firm_name\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;4\">-->\n                                    <!--<label for=\"country2\" class=\"assistant-form__label\">{{ $t(\"all.country\") }}</label>-->\n                                    <!--<select-->\n                                            <!--v-model=\"assistantData.legal_country\"-->\n                                            <!--@change.stop=\"getStates(assistantData.legal_country)\"-->\n                                            <!--name=\"country\" id=\"country2\" class=\"assistant-input assistant-input&#45;&#45;select\"-->\n                                            <!--placeholder=\"Select country...\">-->\n                                        <!--<option v-for=\"country in countries\" :value=\"country.country_id\">{{ country.name-->\n                                            <!--}}-->\n                                        <!--</option>-->\n                                    <!--</select>-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;4\">-->\n                                    <!--<label for=\"state2\" class=\"assistant-form__label\">{{ $t(\"all.region\") }}</label>-->\n                                    <!--<select-->\n                                            <!--@change.stop=\"getCities(assistantData.legal_state)\"-->\n                                            <!--v-model=\"assistantData.legal_state\" name=\"state\" id=\"state2\"-->\n                                            <!--class=\"assistant-input assistant-input&#45;&#45;select\"-->\n                                            <!--placeholder=\"Select state...\">-->\n                                        <!--<option v-for=\"state in states\" :value=\"state.state_id\">{{ state.name }}-->\n                                        <!--</option>-->\n                                    <!--</select>-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;4\">-->\n                                    <!--<label for=\"city2\" class=\"assistant-form__label\">{{ $t(\"all.city\") }}</label>-->\n                                    <!--<select v-model=\"assistantData.legal_city\"-->\n                                            <!--class=\"assistant-input assistant-input&#45;&#45;select\" name=\"city\" id=\"city2\"-->\n                                            <!--placeholder=\"Select city...\">-->\n                                        <!--<option v-for=\"city in cities\" :value=\"city.city_id\">{{ city.name }}</option>-->\n                                    <!--</select>-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;3\">-->\n                                    <!--<label for=\"index2\" class=\"assistant-form__label\">{{ $t(\"all.postIndex\") }}</label>-->\n                                    <!--<input v-model=\"assistantData.legal_post_index\" type=\"text\" class=\"assistant-input\"-->\n                                           <!--id=\"index2\" name=\"post_index\">-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;9\">-->\n                                    <!--<label for=\"street2\" class=\"assistant-form__label\">{{ $t(\"all.address\") }}</label>-->\n                                    <!--<input v-model=\"assistantData.legal_street\" type=\"text\" class=\"assistant-input\"-->\n                                           <!--id=\"street2\" name=\"street\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                        <!--</form>-->\n                    <!--</div>-->\n\n                    <!--<div class=\"assistant-block\">-->\n                        <!--<div class=\"assistant-block__label\">{{ $t(\"all.bankDetails\") }}</div>-->\n                        <!--<form id=\"assistantForm4-2\" class=\"assistant-form\">-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n                                <!--<div class=\"assistant-form__col&#45;&#45;12\">-->\n                                    <!--<label>-->\n                                        <!--<input-->\n                                                <!--@change.stop=\"assistantData.agreement = 0\"-->\n                                                <!--v-model=\"bankInfo\" value=\"no\" type=\"radio\"> {{ $t(\"step4.radioNo\") }}-->\n                                    <!--</label>-->\n                                    <!--<label>-->\n                                        <!--<input-->\n                                                <!--@change.stop=\"assistantData.agreement = 1\"-->\n                                                <!--v-model=\"bankInfo\" value=\"yes\" type=\"radio\"> {{ $t(\"step4.radioYes\") }}-->\n                                    <!--</label>-->\n                                <!--</div>-->\n                            <!--</div>-->\n\n                            <!--<div v-show=\"assistantData.agreement === 1\" class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"iban\" class=\"assistant-form__label\">IBAN</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.iban\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"iban\" name=\"iban\">-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"bic\" class=\"assistant-form__label\">BIC</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.bic\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"bic\" name=\"bic\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                            <!--<div v-show=\"assistantData.agreement === 1\" class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"bank\" class=\"assistant-form__label\">{{ $t(\"all.bankName\") }}</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.bank_name\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"bank\" name=\"bank_name\">-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"owner\" class=\"assistant-form__label\">{{ $t(\"all.owner\") }}</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.account_owner\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"owner\" name=\"account_owner\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n<!--                            <div\n                                    v-show=\"bankInfo === 'yes'\"\n                                    class=\"assistant-form__row\">\n                                <div>\n                                    <input\n                                            @change.stop=\"assistantData.agreement ? assistantData.agreement = 1 : assistantData.agreement = 0\"\n                                            v-model=\"assistantData.agreement\"\n                                            :disabled=\"bankInfo === 'no'\"\n                                            id=\"assistantAgreeCheckbox\"\n                                            class=\"assistant-form__checkbox assistant-input&#45;&#45;checkbox\"\n                                            name=\"agreement\" type=\"checkbox\">\n                                    <label class=\"\" for=\"assistantAgreeCheckbox\"></label>\n                                </div>\n                                <div>{{ $t(\"step4.agreeMess\") }}</div>\n                            </div>-->\n\n                        <!--</form>-->\n                    <!--</div>-->\n\n                    <!--<div class=\"assistant-step__btns\">-->\n                        <!--<button-->\n                                <!--@click=\"prevStep\"-->\n                                <!--class=\"assistant-btn assistant-btn&#45;&#45;gray\">{{ $t(\"all.back\") }}-->\n                        <!--</button>-->\n                        <!--<button-->\n                                <!--@click=\"nextStep\"-->\n                                <!--class=\"assistant-btn assistant-btn&#45;&#45;red\">{{ $t(\"all.next\") }}-->\n                        <!--</button>-->\n                    <!--</div>-->\n                <!--</div>-->\n\n            <!--</div>-->\n        <!--</section>-->\n\n        <section v-show=\"step === 3\" class=\"assistant-hero\">\n            <div class=\"assistant-step__in\">\n                <h2 class=\"assistant-heading--h2\">\n                    {{ $t(\"step6.heading\") }}<br>\n                    {{ $t(\"all.step\") }} {{ step }} / 5\n                </h2>\n                <div class=\"assistant-block no-width-padding\" style=\"width: 1004px;\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step6.label1\") }}</div>\n                    <services-vue></services-vue>\n                </div>\n                <div class=\"assistant-step__btns left-buttons\" style=\"width: 100%; margin-left: calc((100% - 1004px) / 2)\">\n                    <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                    </button>\n                    <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                    </button>\n                </div>\n            </div>\n        </section>\n\n        <section v-show=\"step === 4\" class=\"assistant-hero\">\n            <div class=\"assistant-step__in\">\n                <h2 class=\"assistant-heading--h2\">\n                    {{ $t(\"step7.heading\") }}<br>\n                    {{ $t(\"all.step\") }} {{ step }} / 5\n                </h2>\n                <div class=\"assistant-block no-width-padding no-height-padding\" style=\"width: 1004px;\">\n                        <div class=\"assistant-block__label\">{{ $t(\"step7.label1\") }}</div>\n                        <employees-list-vue></employees-list-vue>\n\n                        <assistant-create-employee></assistant-create-employee>\n                </div>\n                <div class=\"assistant-step__btns left-buttons\" style=\"width: 100%; margin-left: calc((100% - 1004px) / 2)\">\n                    <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                    </button>\n                    <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                    </button>\n                </div>\n            </div>\n        </section>\n\n        <section v-show=\"step === 5\" class=\"assistant-hero\">\n            <div class=\"assistant-step__in\">\n                <h2 class=\"assistant-heading--h2\">\n                    {{ $t(\"step8.heading\") }}<br>\n                    {{ $t(\"all.step\") }} {{ step }} / 5\n                </h2>\n                <div class=\"assistant-block\" style=\"width: 1004px; padding-bottom: 150px;\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step8.label1\") }}</div>\n                    <work-times-vue></work-times-vue>\n                </div>\n                <div class=\"assistant-step__btns left-buttons\" style=\"width: 100%; margin: 40px calc((100% - 1004px) / 2); text-align: left\">\n                    <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                    </button>\n                    <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                    </button>\n                </div>\n            </div>\n        </section>\n\n        <section v-show=\"step === 6\" class=\"assistant-hero\">\n            <div class=\"assistant-hero__in\">\n                <div style=\"position: absolute; top: 95px; left: calc(50% - 480px / 2);\">\n                    <div class=\"assistant-hero__ok\"></div>\n                    <h1 class=\"assistant-heading--h2\">{{ $t(\"step5.heading\") }}</h1>\n                    <p class=\"assistant-hero__desc\">{{ $t(\"step5.desc\") }}</p>\n                    <a href=\"/office\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}</a>\n                </div>\n            </div>\n        </section>\n\n    </div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"assistant\">\n\n        <section v-show=\"step === 0\" class=\"assistant-hero\" style=\"margin-top: calc(25% - 140px)\">\n            <div class=\"assistant-hero_2_in\" style=\"width: 100%\">\n                <h1 class=\"assistant-hero__heading\" style=\"width: 100%; text-align: center; display: table;\">{{ $t(\"step0.heading\") }}, {{ startData.admin_data.firstname }}!</h1>\n                <div class=\"assistant-hero__desc\" style=\"width: 100%; text-align: center; display: table;\">{{ $t(\"step0.desc\") }}</div>\n                <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"step0.btn\") }}\n                </button>\n            </div>\n        </section>\n\n        <section v-show=\"step === 1\" class=\"assistant-step\">\n            <h2 class=\"assistant-heading--h2\">\n                {{ $t(\"all.heading\") }}<br>\n                {{ $t(\"all.step\") }} {{ step }} / 5\n            </h2>\n\n            <div class=\"assistant-step__in\">\n                <div class=\"assistant-step__left\">\n\n                    <div class=\"assistant-block\">\n                        <div class=\"assistant-block__label\">{{ $t(\"step1.label1\") }}</div>\n                        <form id=\"assistantForm1\" class=\"assistant-form\">\n\n                            <div class=\"assistant-form__row\">\n                                <div class=\"assistant-form__col assistant-form__col--3\">\n                                    <label for=\"greeting\" class=\"assistant-form__label\">{{ $t(\"step1.greeting\")\n                                        }}</label>\n                                    <select v-model=\"assistantData.greeting\" @change=\"assistantData.gender = assistantData.greeting\" :value=\"startData.admin_data.gender\" name=\"greeting\" id=\"greeting\" class=\"assistant-input assistant-input--select\">\n                                        <option value=\"male\">{{ $t(\"step1.herr\") }}</option>\n                                        <option value=\"female\">{{ $t(\"step1.frau\") }}</option>\n                                    </select>\n                                </div>\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"first-name\" class=\"assistant-form__label\">{{ $t(\"step1.name\") }}</label>\n                                    <input v-model=\"assistantData.firstname\" :value=\"startData.admin_data.firstname\" type=\"text\" name=\"firstname\" class=\"assistant-input\" id=\"first-name\" required=\"\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"last-name\" class=\"assistant-form__label\">{{ $t(\"step1.lastName\")\n                                        }}</label>\n                                    <input v-model=\"assistantData.lastname\" :value=\"startData.admin_data.lastname\" type=\"text\" name=\"lastname\" class=\"assistant-input\" id=\"last-name\" required=\"\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"email\" class=\"assistant-form__label\">E-Mail</label>\n                                    <input v-model=\"assistantData.email\" :value=\"startData.admin_data.email\" type=\"email\" class=\"assistant-input\" id=\"email\" required=\"\" name=\"email\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"website\" class=\"assistant-form__label\">Website</label>\n                                    <input v-model=\"assistantData.firmname\" type=\"text\" class=\"assistant-input\" id=\"website\" required=\"\" name=\"firmname\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"phone\" class=\"assistant-form__label\">{{ $t(\"step1.tel\") }}</label>\n                                    <input v-model=\"assistantData.telnumber\" :value=\"startData.admin_data.telnumber\" type=\"tel\" class=\"assistant-input\" id=\"phone\" required=\"\" name=\"telnumber\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"mobile\" class=\"assistant-form__label\">{{ $t(\"step1.mobile\") }}</label>\n                                    <input v-model=\"assistantData.mobile\" :value=\"startData.admin_data.mobile\" type=\"tel\" class=\"assistant-input\" id=\"mobile\" name=\"mobile\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"gender\" class=\"assistant-form__label\">{{ $t(\"step1.gender\") }}</label>\n                                    <select v-model=\"assistantData.gender\" @change=\"assistantData.greeting = assistantData.gender\" :value=\"startData.admin_data.gender\" name=\"gender\" id=\"gender\" class=\"assistant-input assistant-input--select\">\n                                        <option value=\"male\">{{ $t(\"step1.male\") }}</option>\n                                        <option value=\"female\">{{ $t(\"step1.female\") }}</option>\n                                    </select>\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"birthday\" class=\"assistant-form__label\">{{ $t(\"step1.birthday\")\n                                        }}</label>\n                                    <input v-model=\"assistantData.birthday\" name=\"birthday\" id=\"birthday\" class=\"assistant-input input-date\" type=\"text\">\n                                </div>\n\n                            </div>\n\n                        </form>\n                    </div>\n\n                    <div class=\"assistant-step__btns\">\n                        <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                        </button>\n                        <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                        </button>\n                    </div>\n                </div>\n\n                <form class=\"assistant-block assistant-upload\" id=\"assistantUploadAvatar\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step1.label2\") }}</div>\n                    <div @dragover.prevent=\"\" @drop=\"onFileChange($event, 'avatar')\" class=\"assistant-upload__drop\">\n                        <input class=\"assistant-block__file\" id=\"assistantAvatar\" type=\"file\" @change=\"onFileChange($event, 'avatar')\">\n                        <img class=\"assistant-upload__image\" :src=\"imgs.avatar || startData.avatar.path\">\n                    </div>\n\n                    <button @click.stop.prevent=\"changeAvatar\" class=\"assistant-upload__btn assistant-btn assistant-btn--red\">{{ $t(\"step1.uploadAvatar\")\n                        }}\n                    </button>\n                </form>\n\n            </div>\n        </section>\n\n        <section v-show=\"step === 2\" class=\"assistant-step\">\n            <h2 class=\"assistant-heading--h2\">\n                {{ $t(\"step2.heading\") }}<br>\n                {{ $t(\"all.step\") }} {{ step }} / 5\n            </h2>\n\n            <div class=\"assistant-step__in\">\n                <div class=\"assistant-step__left\">\n\n                    <div class=\"assistant-block\">\n                        <div class=\"assistant-block__label\">{{ $t(\"step2.label1\") }}</div>\n                        <form id=\"assistantForm2\" class=\"assistant-form\">\n\n                            <div class=\"assistant-form__row\">\n                                <div class=\"assistant-form__col assistant-form__col--12\">\n                                    <label for=\"name-company\" class=\"assistant-form__label\">{{ $t(\"step2.companyName\")\n                                        }}</label>\n                                    <input v-model=\"assistantData.firm_name\" type=\"text\" name=\"firm_name\" class=\"assistant-input\" id=\"name-company\">\n                                </div>\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--4\">\n                                    <label for=\"country\" class=\"assistant-form__label\">{{ $t(\"all.country\") }}</label>\n                                    <select v-model=\"assistantData.country\" @change.stop=\"getStates(assistantData.country)\" name=\"country\" id=\"country\" class=\"assistant-input assistant-input--select\" placeholder=\"Select country...\">\n                                        <option v-for=\"country in countries\" :value=\"country.country_id\">{{ country.name\n                                            }}\n                                        </option>\n                                    </select>\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--4\">\n                                    <label for=\"state\" class=\"assistant-form__label\">{{ $t(\"all.region\") }}</label>\n                                    <select @change.stop=\"getCities(assistantData.state)\" v-model=\"assistantData.state\" name=\"state\" id=\"state\" class=\"assistant-input assistant-input--select\" placeholder=\"Select state...\">\n                                        <option v-for=\"state in states\" :value=\"state.state_id\">{{ state.name }}\n                                        </option>\n                                    </select>\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--4\">\n                                    <label for=\"city\" class=\"assistant-form__label\">Stadt</label>\n                                    <select v-model=\"assistantData.city\" class=\"assistant-input assistant-input--select\" name=\"city\" id=\"city\" placeholder=\"Select city...\">\n                                        <option v-for=\"city in cities\" :value=\"city.city_id\">{{ city.name }}</option>\n                                    </select>\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"index\" class=\"assistant-form__label\">{{ $t(\"all.postIndex\") }}</label>\n                                    <input v-model=\"assistantData.post_index\" type=\"text\" class=\"assistant-input\" id=\"index\" name=\"post_index\" required=\"\">\n                                </div>\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"street\" class=\"assistant-form__label\">{{ $t(\"all.address\") }}</label>\n                                    <input v-model=\"assistantData.street\" type=\"text\" class=\"assistant-input\" id=\"street\" name=\"street\" required=\"\">\n                                </div>\n\n                            </div>\n\n                            <div class=\"assistant-form__row\">\n\n                                <div class=\"assistant-form__col assistant-form__col--6\">\n                                    <label for=\"business\" class=\"assistant-form__label\">{{ $t(\"all.business\") }}</label>\n                                    <select v-model=\"assistantData.firmtype\" name=\"firmtype\" id=\"business\" class=\"assistant-input assistant-input--select\" placeholder=\"Wähle Deine Branche aus…\">\n                                        <option value=\"\">{{ $t(\"step2.business\") }}</option>\n                                        <option v-for=\"firmtype in startData.firmtype\" :selected=\"firmtype.id === startData.admin_data.firmtype\" :value=\"firmtype.id\">{{ firmtype.firmtype }}\n                                        </option>\n                                    </select>\n                                </div>\n\n                            </div>\n\n                        </form>\n                    </div>\n\n                    <div class=\"assistant-step__btns\">\n                        <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                        </button>\n                        <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                        </button>\n                    </div>\n                </div>\n\n                <div class=\"assistant-block assistant-upload\" id=\"assistantUploadLogo\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step2.label2\") }}</div>\n                    <div @dragover.prevent=\"\" @drop=\"onFileChange($event, 'logo')\" class=\"assistant-upload__drop\">\n                        <input class=\"assistant-block__file\" id=\"assistantLogo\" type=\"file\" @change=\"onFileChange($event, 'logo')\">\n                        <img class=\"assistant-upload__image\" :src=\"imgs.logo\">\n                    </div>\n\n                    <button @click.stop.prevent=\"changeLogo\" class=\"assistant-upload__btn assistant-btn assistant-btn--red\">{{ $t(\"step2.uploadLogo\") }}\n                    </button>\n                </div>\n\n            </div>\n        </section>\n\n        <!--<section v-show=\"step === 3\" class=\"assistant-step\">-->\n            <!--<h2 class=\"assistant-heading&#45;&#45;h2\">-->\n                <!--{{ $t(\"all.heading\") }}<br />-->\n                <!--{{ $t(\"all.step\") }} {{ step }} / 6-->\n            <!--</h2>-->\n\n            <!--<div class=\"assistant-step__in\">-->\n                <!--<div class=\"assistant-step__left\">-->\n\n                    <!--<div class=\"assistant-block\">-->\n                        <!--<div class=\"assistant-block__label\">{{ $t(\"all.billingAddress\") }}</div>-->\n                        <!--<form id=\"assistantForm4\" class=\"assistant-form\">-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;12\">-->\n                                    <!--<label for=\"companyName2\" class=\"assistant-form__label\">{{ $t(\"step4.companyName\")-->\n                                        <!--}}</label>-->\n                                    <!--<input v-model=\"assistantData.legal_firm_name\" type=\"text\" class=\"assistant-input\"-->\n                                           <!--id=\"companyName2\" name=\"legal_firm_name\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;4\">-->\n                                    <!--<label for=\"country2\" class=\"assistant-form__label\">{{ $t(\"all.country\") }}</label>-->\n                                    <!--<select-->\n                                            <!--v-model=\"assistantData.legal_country\"-->\n                                            <!--@change.stop=\"getStates(assistantData.legal_country)\"-->\n                                            <!--name=\"country\" id=\"country2\" class=\"assistant-input assistant-input&#45;&#45;select\"-->\n                                            <!--placeholder=\"Select country...\">-->\n                                        <!--<option v-for=\"country in countries\" :value=\"country.country_id\">{{ country.name-->\n                                            <!--}}-->\n                                        <!--</option>-->\n                                    <!--</select>-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;4\">-->\n                                    <!--<label for=\"state2\" class=\"assistant-form__label\">{{ $t(\"all.region\") }}</label>-->\n                                    <!--<select-->\n                                            <!--@change.stop=\"getCities(assistantData.legal_state)\"-->\n                                            <!--v-model=\"assistantData.legal_state\" name=\"state\" id=\"state2\"-->\n                                            <!--class=\"assistant-input assistant-input&#45;&#45;select\"-->\n                                            <!--placeholder=\"Select state...\">-->\n                                        <!--<option v-for=\"state in states\" :value=\"state.state_id\">{{ state.name }}-->\n                                        <!--</option>-->\n                                    <!--</select>-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;4\">-->\n                                    <!--<label for=\"city2\" class=\"assistant-form__label\">{{ $t(\"all.city\") }}</label>-->\n                                    <!--<select v-model=\"assistantData.legal_city\"-->\n                                            <!--class=\"assistant-input assistant-input&#45;&#45;select\" name=\"city\" id=\"city2\"-->\n                                            <!--placeholder=\"Select city...\">-->\n                                        <!--<option v-for=\"city in cities\" :value=\"city.city_id\">{{ city.name }}</option>-->\n                                    <!--</select>-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;3\">-->\n                                    <!--<label for=\"index2\" class=\"assistant-form__label\">{{ $t(\"all.postIndex\") }}</label>-->\n                                    <!--<input v-model=\"assistantData.legal_post_index\" type=\"text\" class=\"assistant-input\"-->\n                                           <!--id=\"index2\" name=\"post_index\">-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;9\">-->\n                                    <!--<label for=\"street2\" class=\"assistant-form__label\">{{ $t(\"all.address\") }}</label>-->\n                                    <!--<input v-model=\"assistantData.legal_street\" type=\"text\" class=\"assistant-input\"-->\n                                           <!--id=\"street2\" name=\"street\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                        <!--</form>-->\n                    <!--</div>-->\n\n                    <!--<div class=\"assistant-block\">-->\n                        <!--<div class=\"assistant-block__label\">{{ $t(\"all.bankDetails\") }}</div>-->\n                        <!--<form id=\"assistantForm4-2\" class=\"assistant-form\">-->\n\n                            <!--<div class=\"assistant-form__row\">-->\n                                <!--<div class=\"assistant-form__col&#45;&#45;12\">-->\n                                    <!--<label>-->\n                                        <!--<input-->\n                                                <!--@change.stop=\"assistantData.agreement = 0\"-->\n                                                <!--v-model=\"bankInfo\" value=\"no\" type=\"radio\"> {{ $t(\"step4.radioNo\") }}-->\n                                    <!--</label>-->\n                                    <!--<label>-->\n                                        <!--<input-->\n                                                <!--@change.stop=\"assistantData.agreement = 1\"-->\n                                                <!--v-model=\"bankInfo\" value=\"yes\" type=\"radio\"> {{ $t(\"step4.radioYes\") }}-->\n                                    <!--</label>-->\n                                <!--</div>-->\n                            <!--</div>-->\n\n                            <!--<div v-show=\"assistantData.agreement === 1\" class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"iban\" class=\"assistant-form__label\">IBAN</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.iban\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"iban\" name=\"iban\">-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"bic\" class=\"assistant-form__label\">BIC</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.bic\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"bic\" name=\"bic\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n                            <!--<div v-show=\"assistantData.agreement === 1\" class=\"assistant-form__row\">-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"bank\" class=\"assistant-form__label\">{{ $t(\"all.bankName\") }}</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.bank_name\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"bank\" name=\"bank_name\">-->\n                                <!--</div>-->\n\n                                <!--<div class=\"assistant-form__col assistant-form__col&#45;&#45;6\">-->\n                                    <!--<label for=\"owner\" class=\"assistant-form__label\">{{ $t(\"all.owner\") }}</label>-->\n                                    <!--<input-->\n                                            <!--v-model=\"assistantData.account_owner\"-->\n                                            <!--:disabled=\"bankInfo === 'no'\"-->\n                                            <!--type=\"text\" class=\"assistant-input\" id=\"owner\" name=\"account_owner\">-->\n                                <!--</div>-->\n\n                            <!--</div>-->\n\n<!--                            <div\n                                    v-show=\"bankInfo === 'yes'\"\n                                    class=\"assistant-form__row\">\n                                <div>\n                                    <input\n                                            @change.stop=\"assistantData.agreement ? assistantData.agreement = 1 : assistantData.agreement = 0\"\n                                            v-model=\"assistantData.agreement\"\n                                            :disabled=\"bankInfo === 'no'\"\n                                            id=\"assistantAgreeCheckbox\"\n                                            class=\"assistant-form__checkbox assistant-input&#45;&#45;checkbox\"\n                                            name=\"agreement\" type=\"checkbox\">\n                                    <label class=\"\" for=\"assistantAgreeCheckbox\"></label>\n                                </div>\n                                <div>{{ $t(\"step4.agreeMess\") }}</div>\n                            </div>-->\n\n                        <!--</form>-->\n                    <!--</div>-->\n\n                    <!--<div class=\"assistant-step__btns\">-->\n                        <!--<button-->\n                                <!--@click=\"prevStep\"-->\n                                <!--class=\"assistant-btn assistant-btn&#45;&#45;gray\">{{ $t(\"all.back\") }}-->\n                        <!--</button>-->\n                        <!--<button-->\n                                <!--@click=\"nextStep\"-->\n                                <!--class=\"assistant-btn assistant-btn&#45;&#45;red\">{{ $t(\"all.next\") }}-->\n                        <!--</button>-->\n                    <!--</div>-->\n                <!--</div>-->\n\n            <!--</div>-->\n        <!--</section>-->\n\n        <section v-show=\"step === 3\" class=\"assistant-hero\">\n            <div class=\"assistant-step__in\">\n                <h2 class=\"assistant-heading--h2\">\n                    {{ $t(\"step6.heading\") }}<br>\n                    {{ $t(\"all.step\") }} {{ step }} / 5\n                </h2>\n                <div class=\"assistant-block no-width-padding\" style=\"width: 1004px;\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step6.label1\") }}</div>\n                    <services-vue></services-vue>\n                </div>\n                <div class=\"assistant-step__btns left-buttons\" style=\"width: 100%; margin-left: calc((100% - 1004px) / 2)\">\n                    <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                    </button>\n                    <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                    </button>\n                </div>\n            </div>\n        </section>\n\n        <section v-show=\"step === 4\" class=\"assistant-hero\">\n            <div class=\"assistant-step__in\">\n                <h2 class=\"assistant-heading--h2\">\n                    {{ $t(\"step7.heading\") }}<br>\n                    {{ $t(\"all.step\") }} {{ step }} / 5\n                </h2>\n                <div class=\"assistant-block no-width-padding no-height-padding\" style=\"width: 1004px;\">\n                        <div class=\"assistant-block__label\">{{ $t(\"step7.label1\") }}</div>\n                        <assistant-create-employee></assistant-create-employee>\n                </div>\n                <div class=\"assistant-step__btns left-buttons\" style=\"width: 100%; margin-left: calc((100% - 1004px) / 2)\">\n                    <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                    </button>\n                    <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                    </button>\n                </div>\n            </div>\n        </section>\n\n        <section v-show=\"step === 5\" class=\"assistant-hero\">\n            <div class=\"assistant-step__in\">\n                <h2 class=\"assistant-heading--h2\">\n                    {{ $t(\"step8.heading\") }}<br>\n                    {{ $t(\"all.step\") }} {{ step }} / 5\n                </h2>\n                <div class=\"assistant-block\" style=\"width: 1004px; padding-bottom: 150px;\">\n                    <div class=\"assistant-block__label\">{{ $t(\"step8.label1\") }}</div>\n                    <work-times-vue></work-times-vue>\n                </div>\n                <div class=\"assistant-step__btns left-buttons\" style=\"width: 100%; margin: 40px calc((100% - 1004px) / 2); text-align: left\">\n                    <button @click=\"prevStep\" class=\"assistant-btn assistant-btn--gray\">{{ $t(\"all.back\") }}\n                    </button>\n                    <button @click=\"nextStep\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}\n                    </button>\n                </div>\n            </div>\n        </section>\n\n        <section v-show=\"step === 6\" class=\"assistant-hero\">\n            <div class=\"assistant-hero__in\">\n                <div style=\"position: absolute; top: 95px; left: calc(50% - 480px / 2);\">\n                    <div class=\"assistant-hero__ok\"></div>\n                    <h1 class=\"assistant-heading--h2\">{{ $t(\"step5.heading\") }}</h1>\n                    <p class=\"assistant-hero__desc\">{{ $t(\"step5.desc\") }}</p>\n                    <a href=\"/office\" class=\"assistant-btn assistant-btn--red\">{{ $t(\"all.next\") }}</a>\n                </div>\n            </div>\n        </section>\n\n    </div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -23292,7 +23715,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-e0c929b0", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../ajax.js":92,"../mixins.js":99,"./WorkTimesVue.vue":131,"vue":89,"vue-hot-reload-api":86}],109:[function(require,module,exports){
+},{"../ajax.js":92,"../mixins.js":102,"./AssistantCreateNewEmployee.js":110,"./WorkTimesVue.vue":134,"vue":89,"vue-hot-reload-api":86}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -23403,7 +23826,7 @@ var BillingVue = _vue2.default.component('billing-vue', {
 
 exports.default = BillingVue;
 
-},{"../ajax.js":92,"../mixins.js":99,"vue":89}],110:[function(require,module,exports){
+},{"../ajax.js":92,"../mixins.js":102,"vue":89}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -23690,7 +24113,7 @@ var ChatVue = _vue2.default.component('chat-vue', {
 
 exports.default = ChatVue;
 
-},{"../ajax.js":92,"../lib.js":98,"moment":84,"vue":89}],111:[function(require,module,exports){
+},{"../ajax.js":92,"../lib.js":101,"moment":84,"vue":89}],114:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("/* line 2, stdin */\n.confirm-vue[_v-380771f4] {\n  width: 100%;\n  height: 100%;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  left: 0;\n  margin: auto;\n  background-color: rgba(0, 0, 0, 0.4);\n  z-index: 1000; }\n  /* line 14, stdin */\n  .confirm-vue__in[_v-380771f4] {\n    width: 480px;\n    height: 140px;\n    background-color: #fff;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    right: 0;\n    left: 0;\n    text-align: center;\n    margin: auto;\n    border-radius: 10px; }\n  /* line 28, stdin */\n  .confirm-vue__text[_v-380771f4] {\n    font-size: 16px; }\n  /* line 32, stdin */\n  .confirm-vue__btn[_v-380771f4] {\n    border: 0;\n    display: inline-block;\n    padding: 12px 20px;\n    border-radius: 20px;\n    color: #ffffff;\n    text-align: center; }\n    /* line 40, stdin */\n    .confirm-vue__btn--ok[_v-380771f4] {\n      background-color: #5dca73; }\n      /* line 42, stdin */\n      .confirm-vue__btn--ok[_v-380771f4]:hover {\n        background-color: #309143; }\n    /* line 47, stdin */\n    .confirm-vue__btn--cancel[_v-380771f4] {\n      background-color: #adb7be; }\n      /* line 49, stdin */\n      .confirm-vue__btn--cancel[_v-380771f4]:hover {\n        background-color: #748591; }\n")
 'use strict';
@@ -23749,7 +24172,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-380771f4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],112:[function(require,module,exports){
+},{"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -23833,7 +24256,7 @@ var CreateEmployeeVue = _vue2.default.component('create-employee-vue', {
 
 exports.default = CreateEmployeeVue;
 
-},{"../ajax.js":92,"./ConfirmVue.vue":111,"./vue-strap/src/Alert.vue":134,"vue":89}],113:[function(require,module,exports){
+},{"../ajax.js":92,"./ConfirmVue.vue":114,"./vue-strap/src/Alert.vue":137,"vue":89}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24160,7 +24583,7 @@ var DashboardVue = _vue2.default.component('dashboard-vue', {
 
 exports.default = DashboardVue;
 
-},{"../ajax.js":92,"moment":84,"vue":89}],114:[function(require,module,exports){
+},{"../ajax.js":92,"moment":84,"vue":89}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24227,7 +24650,7 @@ var DirectorstatsVue = _vue2.default.component('directorstats-vue', {
 
 exports.default = DirectorstatsVue;
 
-},{"../ajax.js":92,"vue":89}],115:[function(require,module,exports){
+},{"../ajax.js":92,"vue":89}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24301,7 +24724,7 @@ var EditingModalVue = _vue2.default.component('editing-modal-vue', {
 
 exports.default = EditingModalVue;
 
-},{"../ajax.js":92,"../mixins.js":99,"vue":89}],116:[function(require,module,exports){
+},{"../ajax.js":92,"../mixins.js":102,"vue":89}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24349,26 +24772,7 @@ var EmployeesListVue = _vue2.default.component('employees-list-vue', {
 
         if (window.location.pathname == "/office/start_assistant") {
 
-            $.ajax({
-                type: "GET",
-                url: "/office/start_assistant/get_employees_list",
-                dataType: 'JSON'
-            }).done(function (response) {
-
-                this.employees = response.data;
-            }.bind(this));
-
-            setInterval(function () {
-
-                $.ajax({
-                    type: "GET",
-                    url: "/office/start_assistant/get_employees_list",
-                    dataType: 'JSON'
-                }).done(function (response) {
-
-                    this.employees = response.data;
-                }.bind(this));
-            }.bind(this), 5000);
+            this.refreshTable();
         }
     },
 
@@ -24398,11 +24802,15 @@ var EmployeesListVue = _vue2.default.component('employees-list-vue', {
 
             if (isConfirm) {
 
+                this.employee = null;
+
                 if (is_ajax === true) {
 
                     $.get(link).done(function () {
                         $('tr[data-row="' + row + '"]').fadeOut("fast");
-                    });
+
+                        this.refreshTable();
+                    }.bind(this));
                 } else {
 
                     location.href = link;
@@ -24455,6 +24863,8 @@ var EmployeesListVue = _vue2.default.component('employees-list-vue', {
                         this.employee = null;
                     }
                 }.bind(this));
+
+                this.refreshTable();
             }
 
             this.isConfirmSubmit = false;
@@ -24474,7 +24884,7 @@ var EmployeesListVue = _vue2.default.component('employees-list-vue', {
             if (e.target.files !== undefined && e.target.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $("#assistantAvatarPreviewEdit_" + id).attr('src', e.target.result);
+                    $(document).find("#assistantAvatarPreviewEdit_" + id).attr('src', e.target.result);
                 };
                 reader.readAsDataURL(e.target.files[0]);
             }
@@ -24501,6 +24911,17 @@ var EmployeesListVue = _vue2.default.component('employees-list-vue', {
         clearEmployee: function clearEmployee() {
 
             this.employee = null;
+        },
+        refreshTable: function refreshTable() {
+
+            $.ajax({
+                type: "GET",
+                url: "/office/start_assistant/get_employees_list",
+                dataType: 'JSON'
+            }).done(function (response) {
+
+                this.employees = response.data;
+            }.bind(this));
         }
     },
     watch: {
@@ -24514,13 +24935,25 @@ var EmployeesListVue = _vue2.default.component('employees-list-vue', {
                 this.submitCreateEmpl();
             }
         }
+    },
+    events: {
+        'userChanged': function userChanged() {
+            $.ajax({
+                type: "GET",
+                url: "/office/start_assistant/get_employees_list",
+                dataType: 'JSON'
+            }).done(function (response) {
+
+                this.employees = response.data;
+            }.bind(this));
+        }
     }
 
 });
 
 exports.default = EmployeesListVue;
 
-},{"../ajax.js":92,"./ConfirmVue.vue":111,"vue":89}],117:[function(require,module,exports){
+},{"../ajax.js":92,"./ConfirmVue.vue":114,"vue":89}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24591,7 +25024,7 @@ var FirmDetailsVue = _vue2.default.component('firmdetails-vue', {
 
 exports.default = FirmDetailsVue;
 
-},{"../ajax.js":92,"../mixins.js":99,"./WorkTimesVue.vue":131,"vue":89}],118:[function(require,module,exports){
+},{"../ajax.js":92,"../mixins.js":102,"./WorkTimesVue.vue":134,"vue":89}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24642,7 +25075,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-52744208", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":89,"vue-hot-reload-api":86}],119:[function(require,module,exports){
+},{"vue":89,"vue-hot-reload-api":86}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24836,7 +25269,7 @@ var HeaderVue = _vue2.default.component('header-vue', {
 
 exports.default = HeaderVue;
 
-},{"../ajax.js":92,"../filters.js":93,"../lib.js":98,"./HeaderTimeVue.vue":118,"moment":84,"vue":89}],120:[function(require,module,exports){
+},{"../ajax.js":92,"../filters.js":96,"../lib.js":101,"./HeaderTimeVue.vue":121,"moment":84,"vue":89}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24923,7 +25356,7 @@ var LogoVue = _vue2.default.component('logo-vue', {
 
 exports.default = LogoVue;
 
-},{"./vue-strap/src/Alert.vue":134,"vue":89}],121:[function(require,module,exports){
+},{"./vue-strap/src/Alert.vue":137,"vue":89}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24961,7 +25394,7 @@ var NewsletterVue = _vue2.default.component('newsletter-vue', {
 
 exports.default = NewsletterVue;
 
-},{"../ajax.js":92,"vue":89}],122:[function(require,module,exports){
+},{"../ajax.js":92,"vue":89}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25205,7 +25638,7 @@ var OrdersVue = _vue2.default.component('orders-vue', {
 
 exports.default = OrdersVue;
 
-},{"../ajax.js":92,"../filters.js":93,"./PaginationVue.vue":123,"./vue-strap/src/Alert.vue":134,"vue":89}],123:[function(require,module,exports){
+},{"../ajax.js":92,"../filters.js":96,"./PaginationVue.vue":126,"./vue-strap/src/Alert.vue":137,"vue":89}],126:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -25256,7 +25689,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-b3c06348", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],124:[function(require,module,exports){
+},{"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25616,7 +26049,7 @@ var ServicesVue = _vue2.default.component('services-vue', {
 
 exports.default = ServicesVue;
 
-},{"../ajax.js":92,"../filters.js":93,"./WorkTimesVue.vue":131,"vue":89}],125:[function(require,module,exports){
+},{"../ajax.js":92,"../filters.js":96,"./WorkTimesVue.vue":134,"vue":89}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25756,7 +26189,7 @@ var SettingsKalendarVue = _vue2.default.component('settings-kalendar-vue', {
 
 exports.default = SettingsKalendarVue;
 
-},{"../ajax.js":92,"../filters.js":93,"./vue-strap/src/Alert.vue":134,"vue":89}],126:[function(require,module,exports){
+},{"../ajax.js":92,"../filters.js":96,"./vue-strap/src/Alert.vue":137,"vue":89}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25799,7 +26232,7 @@ var SidebarVue = _vue2.default.component('sidebar-vue', {
 
 exports.default = SidebarVue;
 
-},{"../ajax.js":92,"vue":89}],127:[function(require,module,exports){
+},{"../ajax.js":92,"vue":89}],130:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26077,7 +26510,7 @@ var SmsinfoVue = _vue2.default.component('smsinfo-vue', {
 
 exports.default = SmsinfoVue;
 
-},{"../ajax.js":92,"vue":89}],128:[function(require,module,exports){
+},{"../ajax.js":92,"vue":89}],131:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26241,7 +26674,7 @@ var TariffVue = _vue2.default.component('tariff-vue', {
 
 exports.default = TariffVue;
 
-},{"../ajax.js":92,"./ConfirmVue.vue":111,"./vue-strap/src/Alert.vue":134,"vue":89}],129:[function(require,module,exports){
+},{"../ajax.js":92,"./ConfirmVue.vue":114,"./vue-strap/src/Alert.vue":137,"vue":89}],132:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26295,7 +26728,7 @@ var TariffsVue = _vue2.default.component('tariffs-vue', {
 
 exports.default = TariffsVue;
 
-},{"vue":89}],130:[function(require,module,exports){
+},{"vue":89}],133:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26444,6 +26877,35 @@ var UserInfoVue = _vue2.default.component('user-info-vue', {
         changeAvatar: function changeAvatar() {
             $('#changeAvatar').click();
         },
+        changeStatus: function changeStatus(event) {
+
+            var $element = $(event.target);
+
+            var status = 'admin';
+
+            if ($element.is(":checked")) {
+
+                status = 'employee';
+            }
+
+            $.ajax({
+                url: '/office/employees/change_status',
+                type: 'POST',
+                data: {
+                    status: status,
+                    _token: ajax.getToken()
+                }
+            }).done(function (response) {
+
+                if (response.redirect !== undefined && response.redirect !== null && !response.redirect.length) {
+
+                    window.location.href = response.redirect;
+                } else {
+
+                    window.location.reload();
+                }
+            }.bind(this));
+        },
         sendLogo: function sendLogo(e) {
             var vm = this;
             var $form = $(e.target);
@@ -26523,7 +26985,7 @@ var UserInfoVue = _vue2.default.component('user-info-vue', {
 
 exports.default = UserInfoVue;
 
-},{"../ajax.js":92,"./vue-strap/src/Alert.vue":134,"croppie":80,"vue":89}],131:[function(require,module,exports){
+},{"../ajax.js":92,"./vue-strap/src/Alert.vue":137,"croppie":80,"vue":89}],134:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -26644,7 +27106,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-06b09b71", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../ajax.js":92,"../filters.js":93,"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],132:[function(require,module,exports){
+},{"../ajax.js":92,"../filters.js":96,"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27543,7 +28005,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-27c25504", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../ajax.js":92,"../lib.js":98,"./vue-datepicker.vue":133,"babel-runtime/core-js/object/values":3,"babel-runtime/helpers/typeof":6,"moment":84,"vue":89,"vue-hot-reload-api":86}],133:[function(require,module,exports){
+},{"../ajax.js":92,"../lib.js":101,"./vue-datepicker.vue":136,"babel-runtime/core-js/object/values":3,"babel-runtime/helpers/typeof":6,"moment":84,"vue":89,"vue-hot-reload-api":86}],136:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.datepicker-overlay[_v-300943ba] {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 998;\n  top: 0;\n  left: 0;\n  overflow: hidden;\n  -webkit-animation: fadein 0.5s;\n  /* Safari, Chrome and Opera > 12.1 */\n  -moz-animation: fadein 0.5s;\n  /* Firefox < 16 */\n  -ms-animation: fadein 0.5s;\n  /* Internet Explorer */\n  -o-animation: fadein 0.5s;\n  /* Opera < 12.1 */\n  animation: fadein 0.5s;\n}\n\n@keyframes fadein {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n\n/* Firefox < 16 */\n\n@-moz-keyframes fadein {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n\n/* Safari, Chrome and Opera > 12.1 */\n\n@-webkit-keyframes fadein {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n\n/* Internet Explorer */\n\n@-ms-keyframes fadein {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n\n/* Opera < 12.1 */\n\n@-o-keyframes fadein {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n.cov-date-body[_v-300943ba] {\n  display: inline-block;\n  background: #3F51B5;\n  overflow: hidden;\n  position: relative;\n  font-size: 16px;\n  font-family: 'Roboto';\n  font-weight: 400;\n  position: fixed;\n  display: block;\n  width: 400px;\n  max-width: 100%;\n  z-index: 999;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n  -ms-transform: translate(-50%, -50%);\n  transform: translate(-50%, -50%);\n  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);\n}\n\n.cov-picker-box[_v-300943ba] {\n  background: #fff;\n  width: 100%;\n  display: inline-block;\n  padding: 25px;\n  box-sizing: border-box !important;\n  -moz-box-sizing: border-box !important;\n  -webkit-box-sizing: border-box !important;\n  -ms-box-sizing: border-box !important;\n  width: 400px;\n  max-width: 100%;\n  height: 280px;\n  text-align: start!important;\n}\n\n.cov-picker-box td[_v-300943ba] {\n  height: 34px;\n  width: 34px;\n  padding: 0;\n  line-height: 34px;\n  color: #000;\n  background: #fff;\n  text-align: center;\n  cursor: pointer;\n}\n\n.cov-picker-box td[_v-300943ba]:hover {\n  background: #E6E6E6;\n}\n\ntable[_v-300943ba] {\n  border-collapse: collapse;\n  border-spacing: 0;\n  width: 100%;\n}\n\n.day[_v-300943ba] {\n  width: 14.2857143%;\n  display: inline-block;\n  text-align: center;\n  cursor: pointer;\n  height: 34px;\n  padding: 0;\n  line-height: 34px;\n  color: #000;\n  background: #fff;\n  vertical-align: middle;\n}\n\n.week ul[_v-300943ba] {\n  margin: 0 0 8px;\n  padding: 0;\n  list-style: none;\n}\n\n.week ul li[_v-300943ba] {\n  width: 14.2%;\n  display: inline-block;\n  text-align: center;\n  background: transparent;\n  color: #000;\n  font-weight: bold;\n}\n\n.passive-day[_v-300943ba] {\n  color: #bbb;\n}\n\n.checked[_v-300943ba] {\n  background: #F50057;\n  color: #FFF !important;\n  border-radius: 3px;\n}\n\n.unavailable[_v-300943ba] {\n  color: #ccc;\n  cursor: not-allowed;\n}\n\n.cov-date-monthly[_v-300943ba] {\n  height: 150px;\n}\n\n.cov-date-monthly > div[_v-300943ba] {\n  display: inline-block;\n  padding: 0;\n  margin: 0;\n  vertical-align: middle;\n  color: #fff;\n  height: 150px;\n  float: left;\n  text-align: center;\n  cursor: pointer;\n}\n\n.cov-date-previous[_v-300943ba],\n.cov-date-next[_v-300943ba] {\n  position: relative;\n  width: 20% !important;\n  text-indent: -300px;\n  overflow: hidden;\n  color: #fff;\n}\n\n.cov-date-caption[_v-300943ba] {\n  width: 60%;\n  padding: 50px 0!important;\n  box-sizing: border-box;\n  font-size: 24px;\n}\n\n.cov-date-caption span[_v-300943ba]:hover {\n  color: rgba(255, 255, 255, 0.7);\n}\n\n.cov-date-previous[_v-300943ba]:hover,\n.cov-date-next[_v-300943ba]:hover {\n  background: rgba(255, 255, 255, 0.1);\n}\n\n.day[_v-300943ba]:hover {\n  background: #EAEAEA;\n}\n\n.unavailable[_v-300943ba]:hover {\n  background: none;\n}\n\n.checked[_v-300943ba]:hover {\n  background: #FF4F8E;\n}\n\n.cov-date-next[_v-300943ba]::before,\n.cov-date-previous[_v-300943ba]::before {\n  width: 20px;\n  height: 2px;\n  text-align: center;\n  position: absolute;\n  background: #fff;\n  top: 50%;\n  margin-top: -7px;\n  margin-left: -7px;\n  left: 50%;\n  line-height: 0;\n  content: '';\n  -webkit-transform: rotate(45deg);\n  -moz-transform: rotate(45deg);\n  transform: rotate(45deg);\n}\n\n.cov-date-next[_v-300943ba]::after,\n.cov-date-previous[_v-300943ba]::after {\n  width: 20px;\n  height: 2px;\n  text-align: center;\n  position: absolute;\n  background: #fff;\n  margin-top: 6px;\n  margin-left: -7px;\n  top: 50%;\n  left: 50%;\n  line-height: 0;\n  content: '';\n  -webkit-transform: rotate(-45deg);\n  -moz-transform: rotate(-45deg);\n  transform: rotate(-45deg);\n}\n\n.cov-date-previous[_v-300943ba]::after {\n  -webkit-transform: rotate(45deg);\n  -moz-transform: rotate(45deg);\n  transform: rotate(45deg);\n}\n\n.cov-date-previous[_v-300943ba]::before {\n  -webkit-transform: rotate(-45deg);\n  -moz-transform: rotate(-45deg);\n  transform: rotate(-45deg);\n}\n\n.date-item[_v-300943ba] {\n  text-align: center;\n  font-size: 20px;\n  padding: 10px 0;\n  cursor: pointer;\n}\n\n.date-item[_v-300943ba]:hover {\n  background: #e0e0e0;\n}\n\n.date-list[_v-300943ba] {\n  overflow: auto;\n  vertical-align: top;\n  padding: 0;\n}\n\n.cov-vue-date[_v-300943ba] {\n  display: inline-block;\n  color: #5D5D5D;\n}\n\n.button-box[_v-300943ba] {\n  background: #fff;\n  vertical-align: top;\n  height: 50px;\n  line-height: 50px;\n  text-align: right;\n  padding-right: 20px;\n}\n\n.button-box span[_v-300943ba] {\n  cursor: pointer;\n  padding: 10px 20px;\n}\n\n.watch-box[_v-300943ba] {\n  height: 100%;\n  overflow: hidden;\n}\n\n.hour-box[_v-300943ba],\n.min-box[_v-300943ba] {\n  display: inline-block;\n  width: 50%;\n  text-align: center;\n  height: 100%;\n  overflow: auto;\n  float: left;\n}\n\n.hour-box ul[_v-300943ba],\n.min-box ul[_v-300943ba] {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n.hour-item[_v-300943ba],\n.min-item[_v-300943ba] {\n  padding: 10px;\n  font-size: 36px;\n  cursor: pointer;\n}\n\n.hour-item[_v-300943ba]:hover,\n.min-item[_v-300943ba]:hover {\n  background: #E3E3E3;\n}\n\n.hour-box .active[_v-300943ba],\n.min-box .active[_v-300943ba] {\n  background: #F50057;\n  color: #FFF !important;\n}\n\n[_v-300943ba]::-webkit-scrollbar {\n  width: 2px;\n}\n\n[_v-300943ba]::-webkit-scrollbar-track {\n  background: #E3E3E3;\n}\n\n[_v-300943ba]::-webkit-scrollbar-thumb {\n  background: #C1C1C1;\n  border-radius: 2px;\n}\n")
 
@@ -28052,7 +28514,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-300943ba", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/json/stringify":2,"moment":84,"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],134:[function(require,module,exports){
+},{"babel-runtime/core-js/get-iterator":1,"babel-runtime/core-js/json/stringify":2,"moment":84,"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],137:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("/* line 2, stdin */\n.fade-transition[_v-d496a16a] {\n  transition: opacity .3s ease; }\n\n/* line 5, stdin */\n.fade-enter[_v-d496a16a],\n.fade-leave[_v-d496a16a] {\n  height: 0;\n  opacity: 0; }\n\n/* line 10, stdin */\n.alert[_v-d496a16a] {\n  padding: 15px;\n  margin-bottom: 20px;\n  border: 1px solid transparent;\n  border-radius: 4px; }\n\n/* line 16, stdin */\n.alert.top[_v-d496a16a] {\n  position: fixed;\n  top: 30px;\n  margin: 0 auto;\n  left: 0;\n  right: 0;\n  z-index: 2; }\n\n/* line 24, stdin */\n.alert.top-right[_v-d496a16a] {\n  position: fixed;\n  top: 30px;\n  right: 50px;\n  z-index: 2; }\n\n/* line 30, stdin */\n.alert-success[_v-d496a16a] {\n  color: #3c763d;\n  background-color: #dff0d8;\n  border-color: #d6e9c6; }\n  /* line 35, stdin */\n  .alert-success .close svg[_v-d496a16a] {\n    fill: #3c763d; }\n\n/* line 40, stdin */\n.alert-danger[_v-d496a16a] {\n  color: #a94442;\n  background-color: #f2dede;\n  border-color: #ebccd1; }\n  /* line 45, stdin */\n  .alert-danger .close svg[_v-d496a16a] {\n    fill: #a94442; }\n\n/* line 49, stdin */\n.close[_v-d496a16a] {\n  border: 0;\n  background-color: transparent;\n  position: absolute;\n  top: 10px;\n  right: 10px; }\n  /* line 56, stdin */\n  .close svg[_v-d496a16a] {\n    width: 16px;\n    height: 16px; }\n")
 'use strict';
@@ -28123,7 +28585,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d496a16a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./utils/coerceBoolean.js":135,"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],135:[function(require,module,exports){
+},{"./utils/coerceBoolean.js":138,"vue":89,"vue-hot-reload-api":86,"vueify/lib/insert-css":90}],138:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

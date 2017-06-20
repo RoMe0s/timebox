@@ -67,7 +67,7 @@ class ProtocolPersonal extends Model
 	{
 		if ($admin_id) {
 			$old_values = Admin::select($change_values)->find($admin_id)->toArray();
-			$new_values = $request->all();
+			$new_values = $request->only($change_values);
 
 			$diffs = array_keys(array_diff($old_values, $new_values));
 			if ($diffs) {

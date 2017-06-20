@@ -74,6 +74,7 @@ class AdminStartAssistantController extends Controller
     public function getStartData()
     {
         $data['admin_data'] = Admin::where('user_id', Auth::id())->first();
+        $data['avatar'] = Avatar::where('user_id', Auth::id())->first();
         $data['firmtype'] = FirmType::get();
         
         return response()->json($data);

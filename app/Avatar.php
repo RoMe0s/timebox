@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 
 
 /**
@@ -28,7 +29,7 @@ class Avatar extends Model
 	public static function storeAvatar($userId, $request)
 	{
 
-		if ($request->hasFile('avatar')) {
+		if ($request->hasFile('avatar') || $request->file('avatar') instanceof UploadedFile) {
 			$avatar = $request->file('avatar');
 
 			$path = '/avatars/images/';
@@ -37,7 +38,12 @@ class Avatar extends Model
 
 			if (self::where('user_id', $userId)->first()) {
 				$oldAvatar = self::where('user_id', $userId)->first()->path;
-				unlink(public_path() . $oldAvatar);
+
+				if(file_exists(public_path() . $oldAvatar)) {
+
+				    unlink(public_path() . $oldAvatar);
+
+                }
 
 				$avatar->move($fullPath, $fileName);
 				self::where('user_id', $userId)->update(['path' => $path . $fileName]);

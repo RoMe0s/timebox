@@ -137,7 +137,7 @@
                     <div @dragover.prevent @drop="onFileChange($event, 'avatar')" class="assistant-upload__drop">
                         <input class="assistant-block__file" id="assistantAvatar" type="file"
                                @change="onFileChange($event, 'avatar')">
-                        <img class="assistant-upload__image" :src="imgs.avatar"/>
+                        <img class="assistant-upload__image" :src="imgs.avatar || startData.avatar.path"/>
                     </div>
 
                     <button @click.stop.prevent="changeAvatar"
@@ -478,8 +478,6 @@
                 </h2>
                 <div class="assistant-block no-width-padding no-height-padding" style="width: 1004px;">
                         <div class="assistant-block__label">{{ $t("step7.label1") }}</div>
-                        <employees-list-vue></employees-list-vue>
-
                         <assistant-create-employee></assistant-create-employee>
                 </div>
                 <div class="assistant-step__btns left-buttons" style="width: 100%; margin-left: calc((100% - 1004px) / 2)">
@@ -536,10 +534,11 @@
     import * as ajax from '../ajax.js'
     import {GET_COUNTRIES, GET_STATES, GET_CITIES} from '../mixins.js'
     import WorkTimesVue from './WorkTimesVue.vue'
+    import AssistantCreateNewEmployee from './AssistantCreateNewEmployee.js'
 
     export default {
 
-        components: {WorkTimesVue},
+        components: {WorkTimesVue, AssistantCreateNewEmployee},
 
         data() {
             return {
@@ -774,6 +773,7 @@
 //            break;
                     case 3:
                         this.$broadcast('getServicesCategories');
+                        this.$broadcast('userChanged');
                         return true;
                         break;
                     case 4:

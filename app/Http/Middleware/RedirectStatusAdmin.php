@@ -71,7 +71,14 @@ class RedirectStatusAdmin {
             */
         }elseif($user->status === 'admin_employee'){
             $employee = $user->employee;
-            $admin = $user->employee->admin;
+            $admin = isset($employee) ? $user->employee->admin : null;
+
+            if(!$admin) {
+
+                Auth::logout();
+                return redirect()->back()->withErrors(['Your admin is not exist']);
+
+            }
 
 	        /**
 	         * check
@@ -95,7 +102,7 @@ class RedirectStatusAdmin {
 	        /**
 	         * check employee status
 	         */
-            if($employee->status !== "active"){
+            if(!isset($employee) || $employee->status !== "active"){
                 Auth::logout();
                 return 'Sorry, you are not active employee. Contact to your admin';
             }

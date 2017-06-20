@@ -6,6 +6,7 @@ use App\Avatar;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Requests;
 use App\ProtocolEmployee;
+use App\ServicesCategory;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,8 +28,6 @@ class AdminNewEmployeeController extends AdminController
 		if ($this->admin->tariffJournal->type === 'free' && $this->admin->employees()->count() >= 2){
 			return redirect('/office/tariff');
 		}
-
-		$this->data['services'] = $this->admin->services()->active()->get();
 
 		return view('admin.employee_create', $this->data);
 	}
@@ -68,7 +67,7 @@ class AdminNewEmployeeController extends AdminController
 
 		    if($request->ajax()) {
 
-		        return ['redirect' => '/office/tariff'];
+		        return ['redirect' => '/office/tariff', 'status' => true];
 
             } else {
 
@@ -95,7 +94,7 @@ class AdminNewEmployeeController extends AdminController
 		}
 		\Session::flash('store_employee', true);
 
-		return response()->json(true);
+		return response()->json(['redirect' => '/office/employees', 'status' => true]);
 	}
 
 	private function saveToOrderNewEmployee($request)

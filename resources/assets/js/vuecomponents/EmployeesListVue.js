@@ -27,29 +27,7 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
 
         if (window.location.pathname == "/office/start_assistant") {
 
-            $.ajax({
-                type: "GET",
-                url: "/office/start_assistant/get_employees_list",
-                dataType: 'JSON'
-            }).done(function (response) {
-
-                this.employees = response.data;
-
-            }.bind(this));
-
-            setInterval(function () {
-
-                $.ajax({
-                    type: "GET",
-                    url: "/office/start_assistant/get_employees_list",
-                    dataType: 'JSON'
-                }).done(function (response) {
-
-                    this.employees = response.data;
-
-                }.bind(this));
-
-            }.bind(this), 5000);
+            this.refreshTable();
 
         }
     },
@@ -76,11 +54,16 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
 
             if (isConfirm) {
 
+                this.employee = null;
+
                 if (is_ajax === true) {
 
                     $.get(link).done(function () {
                         $('tr[data-row="' + row + '"]').fadeOut("fast");
-                    });
+
+                        this.refreshTable();
+
+                    }.bind(this));
 
                 } else {
 
@@ -119,7 +102,7 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
             let $form = $("form#userInfoFormEdit_" + this.formId),
                 formData = new FormData($form[0]);
 
-            if($form.html() !== undefined && $form.html().length) {
+            if ($form.html() !== undefined && $form.html().length) {
 
                 $.ajax({
                     url: $form.attr("action"),
@@ -138,6 +121,8 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
 
                     }.bind(this));
 
+                this.refreshTable();
+
             }
 
             this.isConfirmSubmit = false;
@@ -147,36 +132,36 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
 
             this.employee = null;
 
-          $.get('/office/employees/info/' + id)
-              .done(function(response) {
+            $.get('/office/employees/info/' + id)
+                .done(function (response) {
 
-                  this.employee = response.data;
+                    this.employee = response.data;
 
-                  $('[data-upload]').attr('src', '');
+                    $('[data-upload]').attr('src', '');
 
-              }.bind(this));
+                }.bind(this));
 
         },
         previewAvatar(e, id) {
             if (e.target.files !== undefined && e.target.files[0]) {
                 let reader = new FileReader();
                 reader.onload = function (e) {
-                    $("#assistantAvatarPreviewEdit_" + id).attr('src', e.target.result);
+                    $(document).find("#assistantAvatarPreviewEdit_" + id).attr('src', e.target.result);
                 };
                 reader.readAsDataURL(e.target.files[0]);
             }
         },
         showCategory(id) {
 
-            for(let iterator in this.employee.categories) {
+            for (let iterator in this.employee.categories) {
 
-                if(this.employee.categories[iterator].id !== id) {
+                if (this.employee.categories[iterator].id !== id) {
 
                     this.employee.categories[iterator].show = false;
 
                 } else {
 
-                    if(this.employee.categories[iterator].show === false) {
+                    if (this.employee.categories[iterator].show === false) {
 
                         this.employee.categories[iterator].show = true;
 
@@ -195,6 +180,19 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
 
             this.employee = null;
 
+        },
+        refreshTable() {
+
+            $.ajax({
+                type: "GET",
+                url: "/office/start_assistant/get_employees_list",
+                dataType: 'JSON'
+            }).done(function (response) {
+
+                this.employees = response.data;
+
+            }.bind(this));
+
         }
     },
     watch: {
@@ -207,6 +205,19 @@ let EmployeesListVue = Vue.component('employees-list-vue', {
             if (this.isConfirmSubmit) {
                 this.submitCreateEmpl();
             }
+        }
+    },
+    events: {
+        'userChanged': function () {
+            $.ajax({
+                type: "GET",
+                url: "/office/start_assistant/get_employees_list",
+                dataType: 'JSON'
+            }).done(function (response) {
+
+                this.employees = response.data;
+
+            }.bind(this));
         }
     }
 

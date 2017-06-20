@@ -92,5 +92,12 @@ return [
 
     'show_in_calendar' => 'show in calendar',
     'phone' => 'Phone',
-    'email' => 'Email'
+    'email' => 'Email',
+    'cancel' => 'Cancel',
+    'select photo' => 'Select photo',
+    'employee editing' => 'Employee editing',
+
+    'admin' => 'Administrator',
+    'employee' => 'Employee',
+    'create employee' => 'Create employee'
 ];

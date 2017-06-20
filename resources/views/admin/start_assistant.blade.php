@@ -452,7 +452,7 @@
             </button>
         </div>
     @endif--}}
-    <div class="director-content" style="margin-top: 70px">
+    <div class="director-content" style="margin-top: 70px; width: 100%">
 
         <confirm-vue :show.sync="showConfirm" :is-confirm.sync="isConfirm">
             <p>
@@ -632,10 +632,10 @@
                 <div class="assistant-form__col assistant-form__col--12">
                     <div class="assistant-block assistant-upload no-height-padding no-width-padding" style="height: auto; width: 240px;">
                         <div class="assistant-upload__drop" id="assistantAvatarCropie">
-                            <input class="assistant-block__file" id="assistantAvatar" type="file" name="avatar" v-on:change="previewAvatarr($event)">
-                            <img class="assistant-upload__image" id="assistantAvatarPreview"/>
+                            <input class="assistant-block__file" id="assistantAvatarCreate" type="file" name="avatar" v-on:change="previewAvatarr($event)">
+                            <img class="assistant-upload__image" id="assistantAvatarCreatePreview"/>
                         </div>
-                        <button onclick="$('#assistantAvatar').click();" type="button" class="assistant-upload__btn assistant-btn assistant-btn--red custom-upload-button">
+                        <button onclick="$('#assistantAvatarCreate').click();" type="button" class="assistant-upload__btn assistant-btn assistant-btn--red custom-upload-button">
                             @{{ $t("step7.upload") }}
                         </button>
                     </div>
@@ -703,6 +703,9 @@
 </template>
 
 <template id="create-employee-template">
+
+    <employees-list-vue></employees-list-vue>
+
     <a @click.prevent="changeState({{$can_add_employee}})" class="btn btn--plus add-employee-button">
         <i></i>
         @{{$t('all.add')}}
@@ -791,12 +794,12 @@
 <script src="{{ asset('scripts/admin_ajax.js') }}"></script>
 <script src="{{ asset('scripts/admin.js') }}"></script>
 <script>
-    $(document).on("change", "#assistantAvatar", function (e) {
+    $(document).on("change", "#assistantAvatarCreate", function (e) {
 
         if (e.target.files !== undefined && e.target.files[0]) {
             let reader = new FileReader();
             reader.onload = function (e) {
-                $(document).find("#assistantAvatarPreview").attr('src', e.target.result);
+                $(document).find("#assistantAvatarCreatePreview").attr('src', e.target.result);
             };
             reader.readAsDataURL(e.target.files[0]);
         }
