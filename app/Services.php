@@ -67,7 +67,7 @@ class Services extends Model {
     public static function getActiveServicesList($idAdmin) {
         return self::where(['services.admin_id' => $idAdmin, 'services.service_status' => 1])
                         ->join('services_category', 'services_category.id', '=', 'services.category_id')
-                        ->select(['services.id', 'services_category.category_name', 'services.service_name', 'services.description',
+                        ->select(['services.id as service_id', 'services_category.category_name', 'services.service_name', 'services.description',
                             'services.duration', 'services.price', 'services_category.id as category_id'])
                         ->get();
     }

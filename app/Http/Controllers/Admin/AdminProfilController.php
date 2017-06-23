@@ -116,6 +116,10 @@ class AdminProfilController extends AdminController
 
             }
 
+            $services = $request->input('services') ?: [];
+
+            $employee->servicesEmployee()->sync($services);
+
             $employee->save();
 
             DB::commit();

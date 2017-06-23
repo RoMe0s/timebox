@@ -99,5 +99,33 @@ return [
 
     'admin' => 'Администратор',
     'employee' => 'Сотрудник',
-    'create employee' => 'Создание сотрудника'
+    'create employee' => 'Создание сотрудника',
+
+    'code' => 'Код',
+    'category' => 'Категория',
+    'type' => 'Тип',
+    'count' => 'Количество',
+    'value' => 'Значение',
+    'expired_at' => 'Использовать до',
+    'codes' => 'Коды',
+    'code editing' => 'Редактирование кода',
+    'code creating' => 'Создание кода',
+    'generate' => 'Сгенерировать',
+    'sms' => 'SMS',
+    'tariff' => 'Тариф',
+    'present' => 'Подарок',
+    'discount' => 'Скидка',
+    'percent' => '%',
+    'currency' => 'Валюта',
+
+    'considered' => 'Штук',
+    'calculation' => 'Высчет',
+    'interval' => 'Интервал',
+    'from' => 'От',
+    'to' => 'До',
+    'period' => 'Период',
+    'month' => 'Месяц(ы)',
+    'year' => 'Год',
+    'individual' => 'Индивидуальный'
+
 ];

@@ -20,6 +20,24 @@ Route::group(['middleware' => 'web'], function () {
 				Route::post('/get_location', ['uses' => 'DirectorController@getLocation']);
 
 
+                //start codes
+                Route::get('/code', [
+                    'as' => 'admin.codes.index',
+                    'uses' => 'CodeController@index'
+                ]);
+                Route::get('/code/getList', 'CodeController@getList');
+                Route::delete('/code/{id}', 'CodeController@delete');
+                Route::get('/code/create', [
+                    'as' => 'admin.code.create',
+                    'uses' => 'CodeController@create'
+                ]);
+                Route::get('/code/getData', 'CodeController@getData');
+                Route::post('/code', 'CodeController@store');
+                Route::get('/code/{id}/edit', 'CodeController@edit');
+                Route::put('/code/{id}/update', 'CodeController@update');
+                //end codes
+
+
 				Route::group(['namespace' => 'Admins'], function () {
 					Route::get('/admins_new/{id}', ['as' => 'admin_info_new', 'uses' => 'DirectorNewAdminController@adminInfoNew']);
 					Route::get('/admin_create', ['uses' => 'DirectorNewAdminController@createAdmin']);
@@ -226,7 +244,7 @@ Route::group(['middleware' => 'web'], function () {
 							Route::group(['prefix' => 'info/{employee}'], function () {
 								Route::get('/', ['uses' => 'AdminEmployeeController@employeeInfo']);
 								Route::post('get_personal_info', ['uses' => 'AdminEmployeeController@getEmplInfo']);
-								Route::post('/set_personal_info', ['uses' => 'AdminEmployeeController@setEmplInfo']);
+								Route::post('/set_personal_info', ['uses' => 'AdminEmployeeController@f']);
 								Route::post('/set_password', ['uses' => 'AdminEmployeeController@setPassword']);
 								Route::post('/set_email', ['uses' => 'AdminEmployeeController@setEmail']);
 								Route::post('/store_avatar', ['uses' => 'AdminEmployeeController@storeAvatar']);

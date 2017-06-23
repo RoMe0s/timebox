@@ -52,6 +52,7 @@ class CalendarController extends AdminController
 	//получение всех активных услуг салона
 	public function getServices(Request $request)
 	{
+
 		if (!$request->employee_id) {
 			$result = Services::getActiveServicesList($this->idAdmin)->groupBy('category_name');
 		} else {

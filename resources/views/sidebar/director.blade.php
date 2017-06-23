@@ -14,6 +14,18 @@
 					</a>
 				</li>
 			@endcan
+			@can('director')
+				<li class="sidebar__item">
+					<a href="/backend/code">
+						<div class="sidebar__left">
+							<div class="sidebar__icon sidebar__icon--todo"><i></i></div>
+						</div>
+						<div class="sidebar__right">
+							<h2 class="sidebar__heading heading heading__h2">{{ trans('common.codes') }}</h2>
+						</div>
+					</a>
+				</li>
+			@endcan
 			<li class="sidebar__item">
 				<a href="/backend/admins">
 					<div class="sidebar__left">

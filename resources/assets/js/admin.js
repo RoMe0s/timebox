@@ -28,6 +28,9 @@ import Alert from './vuecomponents/vue-strap/src/Alert.vue'
 import EmployeeIndex from './components/employees/index.js'
 import EmployeeCreateNewVue from './components/employees/create.js'
 
+import CodeIndexVue from './components/code/index.js'
+import CodeEditVue from './components/code/edit.js'
+
 import VueI18n  from 'vue-i18n'
 import VueResource from 'vue-resource'
 import * as ajax from './ajax.js'
@@ -97,7 +100,9 @@ $(document).ready(function() {
       EmployeesListVue,
       CreateEmployeeVue,
       EmployeeIndex,
-      EmployeeCreateNewVue
+      EmployeeCreateNewVue,
+      CodeIndexVue,
+      CodeEditVue
     },
 
     ready() {

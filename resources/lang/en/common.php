@@ -99,5 +99,32 @@ return [
 
     'admin' => 'Administrator',
     'employee' => 'Employee',
-    'create employee' => 'Create employee'
+    'create employee' => 'Create employee',
+
+    'code' => 'Code',
+    'category' => 'Category',
+    'type' => 'Type',
+    'count' => 'Count',
+    'value' => 'Value',
+    'expired_at' => 'Expired date',
+    'codes' => 'Codes',
+    'code editing' => 'Code editing',
+    'code creating' => 'Code creating',
+    'generate' => 'Generate',
+    'sms' => 'SMS',
+    'tariff' => 'Tariff',
+    'present' => 'Present',
+    'discount' => 'Discount',
+    'percent' => '%',
+    'currency' => 'Currency',
+    'considered' => 'Pieces',
+
+    'calculation' => 'Calculation',
+    'interval' => 'Interval',
+    'from' => 'From',
+    'to' => 'To',
+    'period' => 'Period',
+    'month' => 'Month(s)',
+    'year' => 'Yea',
+    'individual' => 'Individual'
 ];

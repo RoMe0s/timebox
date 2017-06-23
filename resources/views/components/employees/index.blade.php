@@ -68,12 +68,5 @@
             </tbody>
         </table>
         {!!$employees->render()!!}
-{{--        <div style="margin: 10px 10px 0">
-            <input type="checkbox" class="assistant-form__checkbox assistant-input--checkbox" id="be-employee-checkbox" v-on:change="changeStatus($event)" {!! $is_employee === true ? "checked" : "" !!}>
-            <label for="be-employee-checkbox" class="assistant-form__label"></label>
-            <label>
-                {!! trans('common.show_in_calendar') !!}
-            </label>
-        </div>--}}
     </div>
 </template>

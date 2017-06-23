@@ -100,5 +100,34 @@ return [
 
     'admin' => 'Verwalter',
     'employee' => 'Mitarbeiter',
-    'create employee' => 'Erstellen mitarbeiter'
+    'create employee' => 'Erstellen mitarbeiter',
+
+    'code' => 'Code',
+    'category' => 'Kategorie',
+    'type' => 'Art',
+    'count' => 'Graf',
+    'value' => 'Wert',
+    'expired_at' => 'Aufbrauchen',
+    'codes' => 'Codes',
+    'code editing' => 'Codebearbeitung',
+    'code creating' => 'Code erstellen',
+    'generate' => 'Generieren',
+    'sms' => 'SMS',
+    'tariff' => 'Tarif',
+    'present' => 'Geschenk',
+    'discount' => 'Rabatt',
+    'percent' => '%',
+    'currency' => 'Währung',
+    'considered' => 'pcs',
+
+    'calculation' => 'Berechnung',
+    'interval' => 'Intervall',
+    'from' => 'Von',
+    'to' => 'Nach',
+    'period' => 'Periode',
+    'month' => 'Monat(e)',
+    'year' => 'Jahr',
+    'individual' => 'Person'
+
+
 ];

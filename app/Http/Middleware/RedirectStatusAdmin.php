@@ -27,6 +27,7 @@ class RedirectStatusAdmin {
 	     */
 	    /** @var User $user */
 	    $user = $request->user();
+//	    dd($user);
         $locale = $user->locale;
         \App::setLocale($locale);
 
@@ -46,17 +47,17 @@ class RedirectStatusAdmin {
 	         */
             if($admin->status === 'blocked'){
                 Auth::logout();
-                return 'Sorry you are blocked. You must pay';//TODO crash site in this line
+                return redirect()->back()->withErrors(['Sorry you are blocked. You must pay']);
             }elseif ($admin->status === 'freeze'){
                 Auth::logout();
-                return 'Sorry you are freeze. Contact to director';
+                return redirect()->back()->withErrors(['Sorry you are freeze. Contact to director']);
             }
 	        /**
 	         * check if current subdomain is own for admin
 	         */
             if($admin->firmlink != $request->subdomain){
                 Auth::logout();
-                return 'Sorry, its not your domain';
+                return redirect()->back()->withErrors(['Sorry, its not your domain']);
             }
 	        /**
 	         * share admin avatar
@@ -85,10 +86,10 @@ class RedirectStatusAdmin {
 	         */
             if($admin->status === 'blocked'){
                 Auth::logout();
-                return 'Sorry your admin is blocked. Please contact to him';
+                return redirect()->back()->withErrors(['Sorry your admin is blocked. Please contact to him']);
             }elseif ($admin->status === 'freeze'){
                 Auth::logout();
-                return 'Sorry your admin freeze. Please contact to him';
+                return redirect()->back()->withErrors(['Sorry your admin freeze. Please contact to him']);
             }
 
 	        /**
@@ -96,7 +97,7 @@ class RedirectStatusAdmin {
 	         */
             if($admin->firmlink != $request->subdomain){
                 Auth::logout();
-                return 'Sorry, its not your domain';
+                return redirect()->back()->withErrors(['Sorry, its not your domain']);
             }
 
 	        /**
@@ -104,7 +105,7 @@ class RedirectStatusAdmin {
 	         */
             if(!isset($employee) || $employee->status !== "active"){
                 Auth::logout();
-                return 'Sorry, you are not active employee. Contact to your admin';
+                return redirect()->back()->withErrors(['Sorry, you are not active employee. Contact to your admin']);
             }
 
 	        /**
