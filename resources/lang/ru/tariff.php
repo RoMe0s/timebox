@@ -21,6 +21,7 @@ return [
     'current_tariff'        =>  'Текущий тариф',
     'change_tariff'         =>  'Изменить тариф',
     'freeze_tariff'         =>  'Заморозить тариф',
+    'insert_code'         =>  'Ввести промокод',
     'client_communication'  =>  'Cвязь с клиентами',
     
     'message_freeze_tariff' =>  'Спасибо, мы закладкой ваше окончание.
@@ -59,6 +60,25 @@ return [
                                     соблюдение вашего периода уведомления. </p>
                                      <p> Пожалуйста держите наготове, когда вы звоните четырехзначный клиентам персональный идентификационный номер.
                                      Это необходимо для дальнейшей обработки вашего заказа.</p>',
+
+    'message_enter_code' => 'Введите промокод',
+    'message_button_activate' => 'Активировать',
+    'message_input_code' => 'Промокод',
+    'message_error_activate' => 'Вы ввели не верный код.',
+    'message_succ_activate' => 'Ваш код успешно активирован.',
+    'message_repeat_activate' => 'Вы уже активировали данный код.',
+    'message_some_activate' => 'Произошла какая-то ошибка.',
+    'message_inactive' => 'Данный код уже не активен',
+    'message_gift' => " Вы получаете тариф в подарок",
+    'message_on' => " на ",
+    'message_month' => " месяц",
+    'message_from' => " с ",
+    'message_to' => " до ",
+    'message_discount' => " Вы получаете скидку на тариф в размере ",
+    'message_sms_discount' => " Вы получаете скидку на SMS в размере ",
+    'message_emp_discount' => "Вы получаете скидку на сотрудников в размере",
+    'message_error_status' => 'Ошибка!',
+    'message_succ_status' => 'Поздравляем!',
 
     'no_information'    =>  'Без информации',
     'technical_problem' =>  'Технические проблемыф',

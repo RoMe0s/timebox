@@ -100,6 +100,7 @@
 				</td>
 				<td class="number">{{number_format($order_details->price, 2)}}</td>
 				<td class="number">{{number_format($order_details->price, 2)}}</td>
+				<?php $sms_price = $order_details->price;?>
 			@else
 				<td class="number">{{$i}}</td>
 				<td class="number">1,00</td>
@@ -110,7 +111,8 @@
 				    - {{date("t-m-Y", strtotime($order_details->created_at))}}</td>
 				<td class="number">{{number_format($order_details->price - $order_details->employee_count * 5, 2)}}</td>
 				<td class="number">{{number_format($order_details->price - $order_details->employee_count * 5, 2)}}</td>
-					<?php $i++?>
+				<?php $tariff_price = $order_details->price - $order_details->employee_count * 5;?>
+				<?php $i++?>
 			@endif
 		</tr>
 		@if($order_details->employee_count)
@@ -124,6 +126,7 @@
 				    - {{date("t-m-Y", strtotime($order_details->created_at))}}</td>
 				<td class="number">{{number_format(5, 2)}}</td>
 				<td class="number">{{number_format($order_details->employee_count * 5, 2)}}</td>
+				<?php $employee_price = $order_details->employee_count * 5;?>
 				<?php $i++?>
 			</tr>
 		@endif
@@ -146,16 +149,109 @@
 		<tr>
 			<td colspan="5">Gesant Netto</td>
 			<td class="number">{{number_format($final_sum - $order_details->tax, 2)}}</td>
+			<?php $final = $final_sum - $order_details->tax ?>
 		</tr>
+		@if ($order_details->discount != 0.00)
+			<tr>
+				<td colspan="4" style="border-right: 0px solid;">
+				@if ($order_details->for_what == 'sms')
+					Rabatt auf SMS
+				@else
+					@if ($order_details->price - $order_details->discount != 0)
+						Rabatt auf Grundgebühr 
+					@else
+						Gutschrift auf Tarif	
+					@endif
+				@endif
+				
+				</td>
+				<td style="border-left: 0px solid;" class="number"></td>
+				<td class="number">{{number_format(-$order_details->discount, 2)}} 
+					@if ($order_details->count == 'percent' || $order_details->sms_count == '%')
+						%
+					@endif
+				</td>
+			</tr>
+		@endif	
+		
+		@if ($order_details->discount_employe != 0.00)
+			<tr>
+				<td colspan="4" style="border-right: 0px solid;">
+					Discount on employee
+				</td>
+				<td style="border-left: 0px solid;" class="number"></td>
+				<td class="number">{{number_format(-$order_details->discount_employe, 2)}} 
+					@if ($order_details->employe_count == 'percent')
+						%
+					@endif
+				</td>
+			</tr>
+		@endif	
+		@if (!($order_details->discount_employe == 0.00 && $order_details->discount == 0.00))
+			<tr>
+				<td colspan="4" style="border-right: 0px solid;">Zu zahlender Betrag</td>
+				<td style="border-left: 0px solid;" class="number"></td>
+				<td class="number">
+						@if ($order_details->for_what == 'sms')
+							@if ($order_details->sms_count == '%')
+								{{number_format($sms_price - (($sms_price*$order_details->discount)/100),2)}}
+								<?php $all = $sms_price - (($sms_price*$order_details->discount)/100); ?>
+							@endif
+							@if ($order_details->sms_count == '€')
+								{{number_format($sms_price - $order_details->discount,2)}}
+								<?php $all = $sms_price - $order_details->discount; ?>
+							@endif
+						@endif
+						@if ($order_details->for_what == 'tariff')
+							@if ($order_details->discount == 0.00)
+								@if ($order_details->employe_count == 'percent')
+									{{number_format($final - ((($employee_price*$order_details->discount_employe))/100), 2)}}
+									<?php $all = $final - ((($employee_price*$order_details->discount_employe))/100); ?>
+								@else
+									{{number_format($final - $order_details->discount_employe, 2)}}
+									<?php $all = $final - $order_details->discount_employe; ?>
+								@endif
+							@else
+								@if ($order_details->count == 'percent')
+									@if ($order_details->employe_count == 'percent')
+										{{number_format($final - ((($tariff_price*$order_details->discount))/100) - ((($employee_price*$order_details->discount_employe))/100), 2)}}
+										<?php $all = $final - ((($tariff_price*$order_details->discount))/100) - ((($employee_price*$order_details->discount_employe))/100); ?>
+									@else
+										{{number_format($final - ((($tariff_price*$order_details->discount))/100) - $order_details->discount_employe, 2)}}
+										<?php $all = $final - ((($tariff_price*$order_details->discount))/100) - $order_details->discount_employe; ?>
+									@endif
+								@endif
+								@if ($order_details->count == 'currency')
+									@if ($order_details->employe_count == 'percent')
+										{{number_format($final - $order_details->discount  - ((($employee_price*$order_details->discount_employe))/100), 2)}}
+										<?php $all = $final - $order_details->discount  - ((($employee_price*$order_details->discount_employe))/100); ?>
+									@else
+										{{number_format($final - $order_details->discount - $order_details->discount_employe, 2)}}
+										<?php $all = $final - $order_details->discount - $order_details->discount_employe; ?>
+									@endif
+								@endif
+							@endif
+						@endif
+
+				</td>
+			</tr>
+		@endif
+		
 		<tr>
 			<td colspan="4" style="border-right: 0px solid;">zzgl. 19,00 % USt. auf</td>
 			<td style="border-left: 0px solid;" class="number"></td>
-			<td class="number">{{number_format($order_details->tax, 2)}}</td>
+			<td class="number">
+				{{number_format( ($all*19)/100 ,2)}}
+				<?php $zzgl = ($all*19)/100; ?>
+			</td>
 		</tr>
+		
 		<tr>
 			<td colspan="5" style="font-weight: 600;"></br><h2>Gesamtbetrag</h2></td>
 			<td class="number" style="font-weight: 600;"></br>
-				<h2>{{number_format($final_sum, 2)}}</h2></td>
+				<h2>
+					{{number_format($zzgl + $all, 2)}}
+				</h2></td>
 		</tr>
 	</table>
 

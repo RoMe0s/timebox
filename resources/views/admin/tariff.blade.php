@@ -48,6 +48,9 @@
 				@if($tariff_type === 'paid')
 					<li data-tab="tab-3" class="block__item">{{trans('tariff.freeze_tariff')}}</li>
 				@endif
+				@can('admin')
+					<li data-tab="tab-4" class="block__item">{{trans('tariff.insert_code')}}</li>
+				@endcan
 
 			</ul>
 
@@ -178,39 +181,31 @@
 
 				</div>
 			@endif
-
-			<div data-tab-id="tab-3" class="tab-content">
-
-				<div class="tarif-step1">{!! trans('tariff.message_freeze_tariff_1') !!}</div>
-
-				<div class="tarif-step2">
-					<table class="table table--striped">
-
-						<tr>
-							<td>Vertragsinhaber</td>
-							<td>{{$admin->firstname . ' ' . $admin->lastname}}</td>
-						</tr>
-
-						<tr>
-							<td>Tarif</td>
-							<td>{{trans('tariff.paid')}}</td>
-						</tr>
-
-						@if($tariff_type === 'paid')
-							<tr>
-								<td>Vertrag aktiv seit</td>
-								<td>{{$paid_from}}</td>
-							</tr>
-						@endif
-
-					</table>
-					<select class="tarif-step2__select" name="">
-						<option value="">{{trans('tariff.technical_problem')}}</option>
-						<option value="">{{trans('tariff.tariff_problem')}}</option>
-						<option value="">{{trans('common.billing')}}</option>
-						<option value="">{{trans('tariff.no_information')}}</option>
-					</select>
+			@can('admin')
+			<div data-tab-id="tab-4" class="tab-content" id="code_activate">
+				<div class="code-content">
+					
+					<div class="code-form">
+						<div class="error">
+							<strong>{{trans('tariff.message_error_status')}} </strong> 
+							<span class="status"></span>
+						</div>
+						<div class="succ">
+							<strong>{{trans('tariff.message_succ_status')}} </strong> 
+							<span class="status"></span>
+						</div>
+						<h1 >{{trans('tariff.message_enter_code')}}</h1>
+						<input class="assistant-input" id="code" type="text" name="code" required="" placeholder = "{{trans('tariff.message_input_code')}}">
+						<div class="assistant-form__col assistant-form__col--6 code-button">
+							<a class="assistant-btn assistant-btn--red" onclick="code_activate($('#code').val())">
+								{{trans('tariff.message_button_activate')}}
+							</a>	
+						</div>
+					</div>	
 				</div>
+			</div>
+			@endcan
+				
 
 				<a @click.prevent.stop="freeze" href="javascript:void(0);"
 				   class="admin-settings__btn btn btn--red f-right">Jetzt ändern</a>

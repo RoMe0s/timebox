@@ -8,6 +8,7 @@ use App\Events\SendAttentionBillOrders;
 use App\Events\SendBillOrders;
 use App\Events\SendBlockBillOrders;
 use App\Events\SendWarningBillOrders;
+use App\Events\SendCode;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -38,9 +39,13 @@ class Kernel extends ConsoleKernel
 			$this->call('sms:send');
 		})->cron('*/15 * * * * *');
 
+		/*$schedule->call(function () {
+			event(new SendBillOrders());
+		})->monthly();*/
+
 		$schedule->call(function () {
 			event(new SendBillOrders());
-		})->monthly();
+		})->cron('/1 * * * *');
 
 		$schedule->call(function (){
 			event(new SendAttentionBillOrders());

@@ -32,7 +32,7 @@ class EventServiceProvider extends ServiceProvider
 	    \App\Events\SendBillOrders::class => [
 		    \App\Listeners\SendBillOrders\CreateNewOrders::class,
 		    \App\Listeners\SendBillOrders\OrderFileGenerate::class,
-		    \App\Listeners\SendBillOrders\SendEmail::class,
+		    
 	    ],
 	    \App\Events\SendAttentionBillOrders::class => [
 		    \App\Listeners\SendAttentionBillOrders\fixAttentionOrders::class,
@@ -48,6 +48,9 @@ class EventServiceProvider extends ServiceProvider
 		    \App\Listeners\SendBlockBillOrders\fixBlockOrders::class,
 		    \App\Listeners\SendBlockBillOrders\OrderFileGenerate::class,
 		    \App\Listeners\SendBlockBillOrders\SendEmail::class,
+	    ],
+		\App\Events\SendCode::class => [
+		    \App\Listeners\SendCode\CheckCode::class,
 	    ]
     ];
 

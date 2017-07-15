@@ -53,7 +53,55 @@ class AdminSMSController extends AdminController
 				: $request->sms_package;
 
 			$sms_package['tax'] = $sms_package['price'] * self::ORDER_TAX;
+			$user = \Auth::user()->Admin;
+			if ($user) {
+				$sms_bonus = $user->bonusSms;
+				$sms_package['sms_count'] = '€';
+				$sms_package['discount'] = 0.00;
+				if ($sms_bonus->count == "percent") $sms_package['sms_count'] = "%";
 
+				$from_flag = 0;
+				$system_years = (int)date("Y");
+				$system_mounth = (int)date("m");
+				$system_day = (int)date("d");
+
+				$date = $sms_bonus->discount_from;
+				$date = explode('-', $date);
+
+				$from_day = (int)$date[2];
+				$from_mounth = (int)$date[1];
+				$from_years = (int)$date[0];
+			
+				$date = $sms_bonus->discount_to;
+				$date = explode('-', $date);
+
+				$to_day = (int)$date[2];
+				$to_mounth = (int)$date[1];
+				$to_years = (int)$date[0];
+
+				if ($from_years < $system_years) {
+					$from_flag = 1;
+					
+				}elseif ($from_years == $system_years) {
+					if ($from_mounth <= $system_mounth && $from_day <= $system_day) {
+						$from_flag = 1;
+						
+					}
+				}
+				if ($from_flag) {
+					if ($to_years > $system_years) {
+						$sms_package['discount'] = $sms_bonus->discount;
+						
+					}elseif ($to_years == $system_years) {
+						if ($to_mounth >= $system_mounth && $to_day >= $system_day) {
+							$sms_package['discount'] = $sms_bonus->discount;
+							
+						}
+					}
+				}
+			}
+			$sms_package['for_what'] = 'sms';
+			
 			/** @var Order $order */
 			$order = $this->admin->orders()->create($sms_package);
 			$order->orderSMS()->create($sms_package);

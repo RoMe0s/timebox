@@ -52,4 +52,5 @@ return [
 	'message_originator'          => 'Originator',
 	'message_body'                => 'Message',
 	'message_save'                => 'Save',
+	'count_increase'              => ' Кол-во SMS увеличилось на ',
 ];

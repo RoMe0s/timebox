@@ -27,12 +27,15 @@ class ConfirmGeneralBill
     public function handle(ConfirmBill $event)
     {
 	    if (!$event->order->orderSMS()->count()){
+
+
 		    if ($event->order->status == 'cancel') {
 			    $event->order->update(['status' => 'paid', 'paid_at' => $event->today]);
 		    } else {
 			    $event->order->update(['status' => 'paid', 'paid_at' => $event->today]);
 			    $event->admin->update(['status' => 'active']);
 		    }
+            
 	    }
     }
 }

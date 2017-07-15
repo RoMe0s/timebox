@@ -31,6 +31,54 @@ class AdminBillingController extends AdminController
 		$this->data['orders_new'] = $this->admin->orders()->new()->get();
 		$this->data['orders_old'] = $this->admin->orders()->old()->get();
 
+		foreach ($this->data['orders_new'] as $order) {
+			$admin = \App\Admin::where("id",$order->admin_id)->first();
+			$order['employee_price'] = $order->employee_count * 5;
+			$order['tariff_price'] = $order->price - ($order->employee_count * 5);
+			$order['discount_employe'] = 0.00;
+			$order['employe_count'] = 'currency';
+
+		if ($admin->bonusEmloyee) {
+                $bonus = $admin->bonusEmloyee;
+                if ($bonus->count != NULL) $order['employe_count'] = $bonus->count;
+
+                $from_flag = 0;
+                $system_years = (int)date("Y");
+                $system_mounth = (int)date("m");
+                $system_day = (int)date("d");
+
+                $date = $bonus->discount_from;
+                $date = explode('-', $date);
+
+                $from_day = (int)$date[2];
+                $from_mounth = (int)$date[1];
+                $from_years = (int)$date[0];
+            
+                $date = $bonus->discount_to;
+                $date = explode('-', $date);
+
+                $to_day = (int)$date[2];
+                $to_mounth = (int)$date[1];
+                $to_years = (int)$date[0];
+
+                if ($from_years < $system_years) {
+                    $from_flag = 1;
+                }elseif ($from_years == $system_years) {
+                    if ($from_mounth <= $system_mounth && $from_day <= $system_day) {
+                        $from_flag = 1;
+                    }
+                }
+                if ($from_flag) {
+                    if ($to_years > $system_years) {
+                        $order['discount_employe'] = $bonus->discount;
+                    }elseif ($to_years == $system_years) {
+                        if ($to_mounth >= $system_mounth && $to_day >= $system_day) {
+                            $order['discount_employe'] = $bonus->discount;
+                        }
+                    }
+                }
+            }
+		}
 		return view('admin.billing', $this->data);
 	}
 

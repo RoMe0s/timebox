@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $table = 'orders';
-    protected $fillable = ['admin_id', 'price', 'tax', 'employee_count', 'extra_price', 'status', 'name', 'paid_at'];
+    protected $fillable = ['admin_id', 'price', 'discount', 'count', 'sms_count', 'tax', 'employee_count', 'extra_price', 'for_what', 'status', 'name', 'paid_at'];
 
 	/**
 	 * Get created order date in right format
@@ -121,7 +121,7 @@ class Order extends Model
     public static function getOrdersForDirector($page)
     {
         return self::join('admins', 'admins.id', '=', 'orders.admin_id')
-            ->select(['orders.id', 'orders.price', 'orders.status', 'orders.created_at', 'orders.paid_at',
+            ->select(['orders.id', 'orders.price', 'orders.discount', 'orders.count', 'orders.sms_count', 'orders.for_what', 'orders.status', 'orders.created_at', 'orders.paid_at',
                 'admins.firstname', 'admins.lastname', 'admins.firmlink'])
             ->orderBy('created_at', 'desc')->skip(15 * ($page - 1))->take(15)->get();
     }

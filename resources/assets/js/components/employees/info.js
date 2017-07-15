@@ -25,12 +25,6 @@ let EmployeeInfoNewVue = Vue.component('employee-info-new-vue', {
         }
     },
 
-    ready() {
-
-        this.getServicesCategories();
-
-    },
-
     props: ["edit"],
 
     methods: {
@@ -95,17 +89,6 @@ let EmployeeInfoNewVue = Vue.component('employee-info-new-vue', {
         openUserInfoModal() {
             this.$broadcast('openUserInfoModal');
         },
-
-        getServicesCategories() {
-
-            $.get('/office/start_assistant/getServicesCategories').done(function (response) {
-
-                this.categories = response.data;
-
-            }.bind(this));
-
-        }
-
     },
     events: {
 

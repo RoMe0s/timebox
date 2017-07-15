@@ -163,5 +163,10 @@ class CodeController extends DirectorController
         }
 
     }
+    
+    public function activate(Request $request) {
+       return  "OK";
+
+    }
 
 }

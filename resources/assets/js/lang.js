@@ -32,7 +32,7 @@ export const LOCALES = {
         step0: {
             heading: 'Welcome',
             desc: 'I am your Start Assist and help you in setting up.',
-            btn: 'Start now'
+            btn: 'Start now',
         },
         step1: {
             label1: 'Personal data',
@@ -48,18 +48,17 @@ export const LOCALES = {
             mobile: 'Mobile',
             gender: 'Gender',
             uploadAvatar: 'Upload avatar',
-            birthday: 'Birthday'
+            birthday: 'Birthday',
         },
         step2: {
-            heading: 'Please fill in this form',
             label1: 'Company',
             label2: 'Logo',
             companyName: 'Company name',
             business: 'Choose your industry ...',
-            uploadLogo: 'Upload logo'
+            uploadLogo: 'Upload logo',
         },
         step3: {
-            heading: 'Please fill in this form',
+            heading: 'Please select the tariff',
             desc: 'Great for small business',
             monthly: 'monthly / INKL. MWST',
             reports: 'Online reports',
@@ -84,11 +83,11 @@ export const LOCALES = {
             desc: 'Now it can start'
         },
         step6: {
-            heading: "Please fill in this form",
+            heading: "Adding services",
             label1: "dienstleistungen hinzufügen"
         },
         step7: {
-            heading: "Please fill in this form",
+            heading: "Adding employees",
             label1: "mitarbeiter",
             label2: "mitarbeiter hinzufügen",
             label3: "Editing",
@@ -96,12 +95,13 @@ export const LOCALES = {
             save: "Save"
         },
         step8: {
-            heading: "Working hours",
-            label1: "Working hours"
+            heading: "opening hours",
+            label1: "opening hours"
         }
     },
     de: {
         all: {
+			categories: 'Kategorien'
             heading: 'Bitte füllen Sie das Formular aus',
             back: 'Zurück',
             next: 'Weiter',
@@ -123,39 +123,12 @@ export const LOCALES = {
             days: 'Wochen',
             employee: 'Mitarbeiter',
             bis: 'bis',
-            services: 'Leistungen',
+            services: 'services',
             dashboard: 'dashboard',
             dashboardDays: 'instrumententafel tage',
             newsletterModule: 'Newsletter Modul',
             desc: 'Beschreibung',
-            step: 'Schritt',
-            categories: 'Kategorien',
-            nr: 'Nr.',
-            name: 'Leistung',
-            status: 'Status',
-            add_category: 'Kategorie hinzufügen',
-            add_service: 'Leistungen hinzufügen',
-            ph_category_name: 'Kategoriename',
-            save: 'Speichern',
-            price: 'Preise',
-            duration: 'Dauer',
-            ph_service_name: 'Leistungsname',
-            duration: 'Dauer',
-            category_name: 'Kategoriename',
-            first_name: 'Vorname',
-            last_name: 'Nachname',
-            phone: 'Telefon',
-            email: 'E-Mail',
-            gender: 'Geschlecht',
-            male: 'Männlich',
-            female: 'Weiblich',
-            birthday: 'Geburtstag',
-            group: 'Rolle',
-            show_in_calender: 'Für buchungen freischalten',
-            category_name: 'Mitarbeiter hinzufügen',
-            cancel: 'Abbrechen',
-            mobile: 'Handy',
-            admin: 'Administrator'
+            step: 'Schritt'
         },
         step0: {
             heading: 'Herzlich Willkommen',
@@ -176,15 +149,14 @@ export const LOCALES = {
             mobile: 'Mobile',
             gender: 'Geschlecht',
             uploadAvatar: 'hochladen',
-            birthday: 'Geburtstag'
+            birthday: 'Geburtstag',
         },
         step2: {
-            heading: "Bitte füllen Sie das Formular aus",
             label1: 'Standort/e',
             label2: 'Logo',
             companyName: 'Filianname',
             business: 'Wähle Deine Branche aus…',
-            uploadLogo: 'hochladen'
+            uploadLogo: 'hochladen',
         },
         step3: {
             heading: 'Bitte den Tarif auswählen',
@@ -212,27 +184,24 @@ export const LOCALES = {
             desc: 'Jetzt kann es los gehen'
         },
         step6: {
-            heading: "Bitte füllen Sie das Formular aus",
-            label1: "Dienstleistungen",
-            categories: "Kategorien",
-            services: 'Leistungen',
+            heading: "Bitte füllen Sie das Formular aus"
+            label1: "dienstleistungen"
         },
         step7: {
-            heading: "Bitte füllen Sie das Formular aus",
-            label1: "mitarbeiter",
-            label2: "mitarbeiter hinzufügen",
-            label3: "Bearbeiten",
-            upload: "Bild hochladen",
+            heading: " Bitte füllen Sie das Formular aus",
+            label1: "Mitarbeiter",
+            label2: "Mitarbeiter hinzufügen",
+            label3: "Bearbeitung",
+            upload: "bild hochladen",
             save: "Speichern"
         },
         step8: {
-            heading: "Innen Stunden",
-            label1: "Innen Stunden"
+            heading: "Bitte füllen Sie das Formular aus",
+            label1: "Öffnungszeiten"
         }
     },
     ru: {
         all: {
-            stats: "текст",
             heading: 'Пожалуйста, заполните форму',
             back: 'Назад',
             next: 'Продолжить',
@@ -280,14 +249,14 @@ export const LOCALES = {
             mobile: 'Мобильный телефон',
             gender: 'Пол',
             uploadAvatar: 'Загрузить аватар',
-            birthday: 'День рождения'
+            birthday: 'День рождения',
         },
         step2: {
             label1: 'Филиалы',
             label2: 'Логотип',
             companyName: 'Название компании',
             business: 'Выберите отрасль ...',
-            uploadLogo: 'Зарузить Лого'
+            uploadLogo: 'Зарузить Лого',
         },
         step3: {
             heading: 'Пожалуйста, выберите тариф',
@@ -302,7 +271,7 @@ export const LOCALES = {
             eventReminder: 'Напоминание о мероприятии',
             newsletterMarketing: 'Информационный бюллетень по маркетингу',
             freeDays: 'дней бесплатно',
-            order: 'Заказать'
+            order: 'Заказать',
         },
         step4: {
             companyName: 'Название компании',
@@ -315,11 +284,11 @@ export const LOCALES = {
             desc: 'Теперь мы можем начать'
         },
         step6: {
-            heading: "Добавление услуг",
-            label1: "dienstleistungen hinzufügen"
+            heading: "Услуги",
+            label1: "Услуги"
         },
         step7: {
-            heading: "Добавление сотрудников",
+            heading: "Сотрудников",
             label1: "mitarbeiter",
             label2: "mitarbeiter hinzufügen",
             upload: "Загрузить",

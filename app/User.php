@@ -82,6 +82,10 @@ class User extends Authenticatable
 	{
 		return $this->hasOne(\App\Employee::class, 'user_id', 'id');
 	}
+    public function codes()
+	{
+	    return $this->belongsToMany(\App\Models\Code::class, 'users_codes');
+	}
 
     public function setEmailAttribute($value)
     {

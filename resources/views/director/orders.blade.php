@@ -249,6 +249,7 @@
                                 <th>Name</th>
                                 <th>Unternehmen</th>
                                 <th>Betrag</th>
+                                <th>Discount</th>
                                 <th>Rechungsdatum</th>
                                 <th>Zahlung</th>
                                 <th class="sorter-false"></th>
@@ -272,6 +273,7 @@
                                         <td>@{{order.firstname}} @{{order.lastname}}</td>
                                         <td>@{{order.firmlink}}.timebox24.com</td>
                                         <td>@{{order.price}} €</td>
+                                        <td>@{{order.discount}} @{{order.sms_count == null ? order.count : order.sms_count}}@{{ order.count == '' ? "€" : '' }}</td>
                                         <td>
                                             @{{ order.created_at | formatDate "DD-MM-YYYY" }}
                                         </td>

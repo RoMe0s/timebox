@@ -54,6 +54,10 @@ class DirectorOrdersController extends DirectorController
 		$orders->each(function (&$item) {
 			return $item->order_number = sprintf('T%05u', $item->id);
 		});
+		$orders->each(function (&$item) {
+			if ($item->count == "percent") return $item->count = "%";
+			if ($item->count == "currency") return $item->count = "€";
+		});
 
 		return response()->json(['count' => $orders->count(), 'orders' => $orders]);
 	}
@@ -265,7 +269,7 @@ class DirectorOrdersController extends DirectorController
 					->orWhere('admins.firmlink', 'LIKE', "%$q%");
 			})
 			->select(['orders.id', 'admins.firstname', 'admins.lastname', 'admins.firmlink',
-				'orders.price', 'orders.status', 'orders.created_at', 'orders.paid_at'])
+				'orders.price', 'orders.discount', 'orders.status', 'orders.created_at', 'orders.paid_at'])
 			->get();
 
 		$result = $result->each(function (&$item) {

@@ -35,6 +35,7 @@ Route::group(['middleware' => 'web'], function () {
                 Route::post('/code', 'CodeController@store');
                 Route::get('/code/{id}/edit', 'CodeController@edit');
                 Route::put('/code/{id}/update', 'CodeController@update');
+
                 //end codes
 
 
@@ -177,7 +178,7 @@ Route::group(['middleware' => 'web'], function () {
 					Route::get('/orders_list', ['as' => 'orders_list', 'uses' => 'AdminOrdersController@ordersList']);
 					Route::get('/search', ['uses' => 'AdminController@search']);
 					Route::get('/set_locale/{loc}', ['uses' => 'AdminController@setLocale']);
-
+					
 					Route::group(['prefix' => 'start_assistant'], function () {
 						Route::get('/', ['uses' => 'AdminStartAssistantController@startAssistant']);
 						Route::post('/get_start_data', ['uses' => 'AdminStartAssistantController@getStartData']);
@@ -338,6 +339,7 @@ Route::group(['middleware' => 'web'], function () {
 						Route::post('/get_tariffs', ['uses' => 'AdminTariffController@getTariffs']);
 						Route::post('/change', ['uses' => 'AdminTariffController@changeTariff']);
 						Route::any('/freeze', ['uses' => 'AdminTariffController@freezeProfil']);
+						Route::post('/code/activate','CodeActivateController@activate' );
 					});
 
 					Route::get('/slider', ['uses' => 'AdminSliderController@slider']);

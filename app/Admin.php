@@ -143,6 +143,21 @@ class Admin extends Model {
 		return $this->hasOne(\App\Firm::class, 'firmlink', 'firmlink');
     }
 
+	public function bonus()
+	{
+		return $this->hasOne(\App\AdminBonus::class, 'admin_id', 'id');
+    }
+
+	public function bonusSms()
+	{
+		return $this->hasOne(\App\AdminSMSBonus::class, 'admin_id', 'id');
+    }
+
+	public function bonusEmloyee()
+	{
+		return $this->hasOne(\App\AdminEmloyeeBonus::class, 'admin_id', 'id');
+    }
+
 	/**
 	 * Relation admin to firmtype
 	 *

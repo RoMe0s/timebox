@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('styles/token-input.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('styles/token-input-facebook.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('styles/token-input-mac.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('styles/code.css') }}"/>
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css"/>
     {{--<link rel="stylesheet" type="text/css" href="{{ asset('styles/ion.rangeSlider.css') }}"/>--}}
     {{--<link rel="stylesheet" type="text/css" href="{{ asset('styles/ion.rangeSlider.skinHTML5.css') }}"/>--}}
@@ -283,5 +284,6 @@
 <script src="//cdn.ckeditor.com/4.5.9/full/ckeditor.js"></script>
 <script src="{{ asset('scripts/admin_ajax.js') }}"></script>
 <script src="{{ asset('scripts/admin.js') }}"></script>
+<script src="{{ asset('scripts/code.js') }}"></script>
 </body>
 </html>

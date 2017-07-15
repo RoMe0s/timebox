@@ -190,7 +190,49 @@
 									<div class="rechnungen__name">{{trans('billing.bill_for') .' ' . $order->created_at}}</div>
 									<div class="rechnungen__desc">{{trans('billing.bill_amount')}}</div>
 									<div class="rechnungen__price">
-										{{$order->price + $order->tax + $order->orderEmployees()->sum('price')}}€
+										<?php 
+											$employee_price = $order->employee_price;
+											$tariff_price = $order->tariff_price;
+											$final = $order->price; 
+										?>
+										@if ($order->for_what === "tariff")
+											@if ($order->discount == 0.00)										
+												@if ($order->employe_count == 'percent')
+													{{number_format($final - ((($employee_price*$order->discount_employe))/100) + ($final - ((($employee_price*$order->discount_employe))/100)*19)/100, 2)}}
+													<?php $all = $final - ((($employee_price*$order->discount_employe))/100); ?>
+												@else
+													{{number_format($final - $order->discount_employe + (($final - $order->discount_employe)*19)/100, 2)}}
+													<?php $all = $final - $order->discount_employe; ?>
+												@endif
+											@else
+												@if ($order->count == 'percent')
+													@if ($order->employe_count == 'percent')
+														<?php $temp = $final - ((($tariff_price*$order->discount))/100) - ((($employee_price*$order->discount_employe))/100); ?>
+														{{number_format($temp + ($temp*19/100), 2)}}
+													@else
+														<?php $temp = $final - ((($tariff_price*$order->discount))/100) - $order->discount_employe; ?>
+														{{number_format($temp + ($temp*19)/100, 2)}}
+													@endif
+												@endif
+												@if ($order->count == 'currency')
+													@if ($order->employe_count == 'percent')
+														<?php $temp = $final - $order->discount  - ((($employee_price*$order->discount_employe))/100); ?>
+														{{number_format($temp + ($temp*19)/100, 2)}}
+													@else
+														<?php $temp = $final - $order->discount - $order->discount_employe; ?>
+														{{number_format($temp + ($temp*19)/100, 2)}}
+													@endif
+												@endif
+											@endif
+										@else
+											@if ($order->sms_count == '%')
+												{{number_format($final - ((($tariff_price*$order->discount))/100) + ((($final - (($tariff_price*$order->discount))/100)*19)/100), 2)}}
+											@endif
+											@if ($order->sms_count == '€')
+												{{number_format($final - $order->discount + (($final - $order->discount)*19/100), 2)}}
+											@endif
+										@endif 
+										€
 									</div>
 								</div>
 								<a class="btn btn--red"

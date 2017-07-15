@@ -21,6 +21,7 @@ return [
     'current_tariff'        =>  'Ihr Tarif',
     'change_tariff'         =>  'Tarif wechseln',
     'freeze_tariff'         =>  'Kündigung vormerken',
+    'insert_code'         =>  'Gutscheincode eintragen',
     'client_communication'  =>  'Client-Kommunikation',
     
     
@@ -58,6 +59,25 @@ return [
                                     Verfügung. Bitte beachten Sie, dass der Zeitpunkt des Anrufs ausschlaggebend für 
                                     die Einhaltung Ihrer Kündigungsfrist ist.</p>
                                     ',
+                                    
+    'message_enter_code' => 'Gutscheincode eintragen',
+    'message_button_activate' => 'Einlösen',
+    'message_input_code' => 'Gutscheincode',
+    'message_error_activate' => 'Gutscheincode ist falsch',
+    'message_succ_activate' => 'Der Gutscheincode wurde erfolgreich aktiviert.',
+    'message_repeat_activate' => 'Der Gutscheincode wurde bereits eingelöst',
+    'message_some_activate' => 'Fehler! Bitte den Administrator benachrichtigen',
+    'message_inactive' => 'Der Gutscheincode ist abgelaufen',
+    'message_gift' => " Sie erhalten einen Gutschrift für auf die Grundbebühr",
+    'message_on' => " für  ",
+    'message_month' => " Monat(en)",
+    'message_from' => " von ",
+    'message_to' => " bis ",
+    'message_discount' => " Sie erhalten einen Rabatt auf Grundgebühr in Höhe von ",
+    'message_sms_discount' => " Sie erhalten einen Rabatt für die SMS in Höhe von ",
+    'message_emp_discount' => "Sie erhalten einen Rabatt für die Mitarbeiter in Höhe von",
+    'message_error_status' => 'Fehler!',
+    'message_succ_status' => 'Gratulieren!!',
 
     'no_information'    =>  'Keine Angaben',
     'technical_problem' =>  'Technische Probleme',
